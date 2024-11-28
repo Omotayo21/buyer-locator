@@ -2,7 +2,7 @@ const realEstateAPIService = require("../services/realEstateAPIService");
 
 const getAutocompleteSuggestions = async (req, res) => {
   try {
-    const { query } = req.query; 
+    const { query } = req.body; 
     const suggestions = await realEstateAPIService.fetchAutocompleteSuggestions(
       query
     );

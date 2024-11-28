@@ -1,5 +1,6 @@
 const axios = require("axios");
 const dotenv = require("dotenv");
+const { search } = require("../routes/autocompleteRoutes");
 require("dotenv").config();
 const API_KEY = process.env.REAL_ESTATE_API_KEY;
 const BASE_URL = "https://api.realestateapi.com";
@@ -16,23 +17,26 @@ const fetchAutocompleteSuggestions = async (query) => {
       },
       data: {
         search: query,
+        search_types: ["A"],
       },
     };
-
-    axios
-      .request(options)
-      .then((res) => console.log(res.data))
-      .catch((err) => console.error(err));
-  } catch (error) {
+   const response = await axios.request(options);
+   return response.data;
+    //axios
+    //  .request(options)
+    //  .then((res) => console.log(res.data))
+    //  .catch((err) => console.error(err));
+  //return res.data
+    } catch (error) {
     console.error(`Error fetching autocomplete suggestions: ${error.message}`);
     console.error(`Error details: ${error.stack}`);
     throw error;
   }
 };
 
-const fetchPropertyDetails = async (addressObject) => {
-  const addressString = JSON.stringify(addressObject.address);
-  console.log("Type of address:", typeof address);
+const fetchPropertyDetails = async (encodedAddress) => {
+  const addressString = JSON.stringify(encodedAddress);
+  console.log("Type of address:", typeof encodedAddress);
   //const decodedAddress = decodeURIComponent(addressString);
 
   const options = {
@@ -51,14 +55,15 @@ const fetchPropertyDetails = async (addressObject) => {
       size: 2,
       properties_owned_min: 10,
       portfolio_purchased_last12_min: 3,
-      address: addressString,
+      address: encodedAddress,
     },
   };
-
-  axios
-    .request(options)
-    .then((res) => console.log(res.data))
-    .catch((err) => console.error(err));
+ const response = await axios.request(options);
+ return response.data;
+  //axios
+    //.request(options)
+    //.then((res) => console.log(res.data))
+    //.catch((err) => console.error(err));
 };
 
 module.exports = { fetchAutocompleteSuggestions, fetchPropertyDetails };
