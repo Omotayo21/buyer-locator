@@ -42,7 +42,7 @@ const fetchPropertyDetails = async (addressObject) => {
       accept: "application/json",
       "x-user-id": "UniqueUserIdentifier",
       "content-type": "application/json",
-      "x-api-key": "REALESTATEWHOLESALERELITE-fba6-74f3-8509-f6b34ae25259",
+      "x-api-key": API_KEY,
     },
     data: {
       ids_only: false,
