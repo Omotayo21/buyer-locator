@@ -5,4 +5,4 @@ const router = express.Router();
 
 router.post("/", getPropertyDetails);
 
-module.exports = route;
+module.exports = router;

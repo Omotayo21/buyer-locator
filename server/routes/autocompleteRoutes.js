@@ -5,6 +5,6 @@ const {
 
 const router = express.Router();
 
-router.get("/", getAutocompleteSuggestions);
+router.post("/", getAutocompleteSuggestions);
 
 module.exports = router;

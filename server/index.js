@@ -1,11 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-//const dotenv = require("dotenv")
+const dotenv = require("dotenv")
 const mongoose = require("mongoose");
 const AppError = require("./helpers/AppError");
 const errorController = require("./controllers/errorController");
-
-
+const autocompleteRoutes = require("./routes/autocompleteRoutes");
+const propertyRoutes = require("./routes/propertyRoutes");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -18,6 +18,8 @@ app.use(express.urlencoded({ extended: false }));
 const port = process.env.PORT || 3000;
 
 //app.use("/api/expenses", expenseRoutes);
+app.use("/api/properties", propertyRoutes);
+app.use("/api/autocomplete", autocompleteRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello from Node API Server Updated");
