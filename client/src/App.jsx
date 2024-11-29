@@ -77,7 +77,7 @@ const App = () => {
   return (
     <div>
       <h2>Buyer Locator</h2>
-      {/* Autocomplete Section */}
+      
       <div>
         <input
           type="text"
@@ -102,7 +102,7 @@ const App = () => {
           ))}
         </ul>
       </div>
-      {/* Property Details Section */}
+      
       <form onSubmit={handleSearch}>
         <button
           type="submit"
@@ -137,3 +137,4 @@ const App = () => {
 };
 
 export default App;
+
