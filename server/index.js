@@ -8,12 +8,18 @@ const autocompleteRoutes = require("./routes/autocompleteRoutes");
 const propertyRoutes = require("./routes/propertyRoutes");
 const comparablesRoutes = require("./routes/comparablesRoutes");
 const cookieParser = require("cookie-parser");
+const http = require("http");
 
 const app = express();
 app.use(cookieParser());
 require("dotenv").config();
 
-app.use(cors())
+app.use(
+  cors({
+    origin: "*", // Allow all origins (for testing purposes)
+    methods: "GET,POST,PUT,DELETE",
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const port = process.env.PORT || 3000;
@@ -28,7 +34,11 @@ app.get("/", (req, res) => {
 });
 
 
-app.listen(port, () => { console.log(`Server running on port ${port}`) });
+// Set timeout to 2 minutes (120000 ms)
+const server = app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+server.timeout = 120000; // Set timeout to 120 second
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
