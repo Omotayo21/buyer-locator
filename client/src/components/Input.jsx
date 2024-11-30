@@ -1,47 +1,38 @@
 import React, { useCallback, useState } from "react";
 import axios from "axios";
 import BaseUrl from "../config";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
 
 const Input = ({ setAddress, address }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [loading, setIsLoading] = useState(false);
-  //   const [address, setAddress] = useState("");
-  const [propertyDetails, setPropertyDetails] = useState(null);
-  const [buyerInfo, setBuyerInfo] = useState([]); // Define buyerInfo state
 
   const handleAddressSelect = (selectedAddress) => {
     setAddress(selectedAddress);
     setQuery(selectedAddress);
-    setSuggestions([]);
+    setSuggestions([]); // Clear suggestions after selection
   };
 
   // Function to fetch suggestions from the AutoComplete API
   const fetchSuggestions = async (searchQuery) => {
     if (!searchQuery) {
-      setSuggestions([]);
+      setSuggestions([]); // Clear suggestions if input is empty
       return;
     }
-    // toast.loading("loadig");
-    setIsLoading(true)
     try {
       const response = await axios.post(`${BaseUrl}/api/autocomplete`, {
         query: searchQuery,
       });
 
       const data = response.data;
-      setIsLoading(false)
-      const addresses = data.data.map((item) => item.address);
-      setSuggestions(addresses);
+      const addresses = data.data.map((item) => item.address); // Extract addresses
+      setSuggestions(addresses); // Update suggestions with all addresses
       toast.success("AutoComplete Fetched Successfully");
-      console.log(data);
-    } catch(error) {
-        toast.error(error.message)
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      toast.error("Failed to fetch suggestions");
+      console.error(error);
     }
   };
 
@@ -57,11 +48,10 @@ const Input = ({ setAddress, address }) => {
     const value = event.target.value;
     setQuery(value);
     debouncedFetch(value); // Trigger debounced fetch
-    
   };
+
   return (
-    <div className="w-full  relative">
-       
+    <div className="w-full relative">
       <input
         type="text"
         value={query}
@@ -69,13 +59,19 @@ const Input = ({ setAddress, address }) => {
         placeholder="Enter property address"
         className="p-3 text-lg rounded-md border border-gray-300 w-full"
       />
-      {suggestions.map((suggestion, index) => (
-        <div
-          className="p-3 border-b cursor-pointer bg-purple-400 w-full absolute"
-          onClick={() => handleAddressSelect(suggestion)}>
-          {suggestion}
+      {/* Render Suggestions */}
+      {suggestions.length > 0 && (
+        <div className="absolute bg-white border rounded-md shadow-md w-full max-h-60 overflow-y-auto">
+          {suggestions.map((suggestion, index) => (
+            <div
+              key={index}
+              className="p-3 border-b cursor-pointer bg-purple-400 hover:bg-purple-500 text-white"
+              onClick={() => handleAddressSelect(suggestion)}>
+              {suggestion}
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 };

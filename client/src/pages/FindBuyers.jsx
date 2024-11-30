@@ -4,13 +4,14 @@ import BaseUrl from "../config";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jsPDF from "jspdf";
-import { Link, Outlet } from "react-router-dom";
 import Input from "../components/Input";
+import { CgSpinner, CgSpinnerAlt } from "react-icons/cg";
+import "jspdf-autotable";
+
 const FindBuyers = () => {
   const [address, setAddress] = useState("");
   const [buyers, setBuyers] = useState([
-    // { name: "PEter", property: "20", id: "1" },
-    // { name: "PEter", property: "20", id: "1" },
+   
   ]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -28,37 +29,57 @@ const FindBuyers = () => {
       const data = response.data.data;
       toast.success("Success! Search completed.");
       setBuyers(data);
+      console.log(data[0].owner1FirstName);
+      console.log(data[0].owner1LastName);
       console.log(data);
     } catch (err) {
-      //   toast.error(err.message, {
-      //     position: toast.POSITION.TOP_RIGHT,
-      //   });
-      toast.error(err.response.data.error);
-
+      toast.error(err?.response?.data?.error || err?.message);
+      setLoading(false);
       console.log(err);
     } finally {
       setLoading(false);
     }
   };
-
-  // Save as PDF
+// Save AS PDF
   const saveAsPDF = () => {
     const doc = new jsPDF();
-    doc.setFontSize(12);
+
+    // Title
+    doc.setFontSize(16);
     doc.text("Buyer Locator Report", 10, 10);
 
-    buyers.forEach((buyer, index) => {
-      const yPosition = 20 + index * 10; // Dynamically position each buyer's info
-      doc.text(
-        `ID: ${buyer.propertyId}, Name: ${
-          buyer.owner1FirstName + buyer.owner1LastName
-        },  Address: ${buyer.address}`,
-        10,
-        yPosition
-      );
+    // Define table headers and rows
+    const tableHeaders = [
+      ["Property ID", "Name", "Address", "Sales Price", "Year Built"],
+    ];
+
+    const tableRows = buyers.map((buyer) => [
+      buyer?.propertyId || "N/A",
+      `${buyer?.owner1FirstName || ""} ${buyer?.owner1LastName || ""}`.trim() ||
+        "N/A",
+      buyer?.address?.address || "N/A",
+      buyer?.lastSaleAmount || "N/A",
+      buyer?.yearBuilt || "N/L",
+    ]);
+
+    // Add table to the document
+    doc?.autoTable({
+      head: tableHeaders,
+      body: tableRows,
+      startY: 20, // Position below the title
+      styles: {
+        fontSize: 10, // Adjust font size
+        cellPadding: 4, // Add padding
+      },
+      headStyles: {
+        fillColor: [0, 123, 255], // Blue header background
+        textColor: 255, // White header text
+        fontStyle: "bold",
+      },
     });
 
-    doc.save("buyers.pdf");
+    // Save the PDF
+    doc.save("buyer-locator-report.pdf");
   };
 
   return (
@@ -71,7 +92,7 @@ const FindBuyers = () => {
             className="bg-[#4608AD] text-white w-[70px] flex justify-center items-center  h-[50px] rounded-md text-sm">
             {loading ? (
               <p className="animate-spin">
-                <CgSpinner />
+                <CgSpinnerAlt />
               </p>
             ) : (
               "Get Buyers"
@@ -89,7 +110,7 @@ const FindBuyers = () => {
                   Name
                 </th>
                 <th scope="col" className="py-3 px-6">
-                  Property
+                  12M Purchase
                 </th>
               </tr>
             </thead>
@@ -100,7 +121,9 @@ const FindBuyers = () => {
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                   <td className="py-4 px-6">{item.propertyId}</td>
                   <td className="py-4 px-6">
-                    {item.owner1FirstName + item.owner1LastName}
+                    {`${item?.owner1FirstName || ""}  ${
+                      item?.owner1LastName || ""
+                    }`}
                   </td>
                   <td className="py-4 px-6">
                     {item.portfolioPurchasedLast12Months}

@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import BuyerLocator from "./components/BuyerLocator";
 import FindBuyers from "./pages/FindBuyers";
-import FindComparables from "./pages/FindComparables";
+import FindComparables from "./pages/ComparableFinder";
 function App() {
   return (
     <div className="h-screen bg-white flex flex-col  w-full overflow-hidden ">
