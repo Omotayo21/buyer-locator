@@ -78,7 +78,7 @@ exports.getComparables = async (req, res) => {
           ? isAfter(parseISO(comp.lastSaleDate), twelveMonthsAgo)
           : false;
         console.log("Last Sale Date Valid:", lastSaleDateValid);
-        return isSameType && lastSaleDateValid;
+       return isSameType && within250SqFt && within10Years && withinLotSize && lastSaleDateValid;
       })
       .map((comp) => adjustComparable(subject, comp));
 
