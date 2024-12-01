@@ -20,18 +20,18 @@ const Header = () => {
             Buyer Locator
           </Link>
           <Link
-            to="/locate"
+            to="/poster"
             className={` font-medium font-mono ${
-              location.pathname === "/locate"
+              location.pathname === "/poster"
                 ? " pb-2 text-[#4608AD] border-b-[#4608AD] border-b-4  text-[#4608AD"
                 : "pb-3  text-gray-500"
             }`}>
             Poster Poster
           </Link>
           <Link
-            to="/buyer"
+            to="/facebookscrapper"
             className={` font-medium font-mono ${
-              location.pathname === "/buyer"
+              location.pathname === "/facebookscrapper"
                 ? " pb-2 text-[#4608AD] border-b-[#4608AD] border-b-4  text-[#4608AD"
                 : "pb-3  text-gray-500"
             }`}>

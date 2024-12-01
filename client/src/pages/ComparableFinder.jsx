@@ -4,8 +4,8 @@ import BaseUrl from "../config";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jsPDF from "jspdf";
-import Input from "../components/fetchcomps/CompsInput";
-import {  CgSpinnerAlt } from "react-icons/cg";
+import Input from "../components/Input";
+import { CgSpinnerAlt } from "react-icons/cg";
 import "jspdf-autotable";
 
 const ComparableFinder = () => {
@@ -13,7 +13,7 @@ const ComparableFinder = () => {
   const [comparables, setComparable] = useState([] | "");
   const [loading, setLoading] = useState(false);
 
-  // Fetch COmparables 
+  // Fetch COmparables
   const fetchComparables = async () => {
     const url = `${BaseUrl}/api/properties`;
     try {
@@ -102,7 +102,7 @@ const ComparableFinder = () => {
         <div className="flex w-ful h-fit gap-4 ">
           <Input setAddress={setAddress} address={address} />
           <button
-          disabled={address.length <= 0}
+            disabled={address.length <= 0}
             onClick={fetchComparables}
             className="bg-[#4608AD] disabled:bg-[#4708ad33] disabled:cursor-not-allowed text-white w-[70px] flex justify-center items-center  h-[50px] rounded-md text-sm">
             {loading ? (
@@ -115,23 +115,23 @@ const ComparableFinder = () => {
           </button>
         </div>
         <div className="overflow-y-auto h-96">
-          {comparables.length > 0 && (
-            <table className="table-auto w-full text-left text-sm text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th scope="col" className="py-3 px-6">
-                    ID
-                  </th>
-                  <th scope="col" className="py-3 px-6">
-                    Name
-                  </th>
-                  <th scope="col" className="py-3 px-6">
-                    SqFt of the Property
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparables.map((item) => (
+          <table className="table-auto w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" className="py-3 px-6">
+                  ID
+                </th>
+                <th scope="col" className="py-3 px-6">
+                  Name
+                </th>
+                <th scope="col" className="py-3 px-6">
+                  SqFt of the Property
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {comparables.length > 0 &&
+                comparables.map((item) => (
                   <tr
                     key={item.id}
                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
@@ -144,11 +144,8 @@ const ComparableFinder = () => {
                     <td className="py-4 px-6">{item.squareFeet}</td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          )}
-
-          {}
+            </tbody>
+          </table>
         </div>
       </div>
       <abbr title="Make sure the table contains at least one COMPARABLE before Saving As PDF ">

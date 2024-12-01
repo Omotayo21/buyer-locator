@@ -4,8 +4,8 @@ import BaseUrl from "../config";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jsPDF from "jspdf";
-import Input from "../components/fetchbuyers/BuyersInput";
-import { CgSpinner, CgSpinnerAlt } from "react-icons/cg";
+import Input from "../components/Input";
+import {  CgSpinnerAlt } from "react-icons/cg";
 import "jspdf-autotable";
 
 const FindBuyers = () => {
@@ -21,7 +21,7 @@ const FindBuyers = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.post(`${BaseUrl}/api/properties`, {
+      const response = await axios.post(`${url}`, {
         address,
       });
 
@@ -85,7 +85,7 @@ const FindBuyers = () => {
     <div className="lg:border mt-4  lg:border-gray-300 mx-auto  lg:p-0 max-w-xl h-4/5">
       <div className="w-full h-full ">
         <div className="flex w-ful h-fit gap-4 ">
-          <Input setAddress={setAddress} address={address} />
+          <Input setAddress={setAddress} address={address} /> 
           <button
             disabled={address.length <= 0}
             onClick={fetchBuyers}
