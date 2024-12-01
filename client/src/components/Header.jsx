@@ -11,7 +11,7 @@ const Header = () => {
         <h1 className="font-bold text-2xl">SocialPost Pro</h1>
         <div className="flex gap-3 h-full   items-end">
           <Link
-            to="/locate-buyer"
+            to="/locate-buyer/find-buyers"
             className={` font-medium font-mono ${
               location.pathname.startsWith("/locate-buyer") 
                 ? " pb-2 text-[#4608AD] border-b-[#4608AD] border-b-4  text-[#4608AD"

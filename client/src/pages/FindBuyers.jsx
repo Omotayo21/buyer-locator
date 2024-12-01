@@ -4,20 +4,19 @@ import BaseUrl from "../config";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jsPDF from "jspdf";
-import Input from "../components/Input";
+import Input from "../components/fetchbuyers/BuyersInput";
 import { CgSpinner, CgSpinnerAlt } from "react-icons/cg";
 import "jspdf-autotable";
 
 const FindBuyers = () => {
   const [address, setAddress] = useState("");
-  const [buyers, setBuyers] = useState([
-   
-  ]);
+  const [buyers, setBuyers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Fetch Buyers (Same as before)
   const fetchBuyers = async () => {
+    console.log(address);
     const url = `${BaseUrl}/api/properties`;
     try {
       setLoading(true);
@@ -27,8 +26,9 @@ const FindBuyers = () => {
       });
 
       const data = response.data.data;
-      toast.success("Success! Search completed.");
+      console.log(data);
       setBuyers(data);
+      toast.success("Success! Search completed.");
       console.log(data[0].owner1FirstName);
       console.log(data[0].owner1LastName);
       console.log(data);
@@ -40,7 +40,7 @@ const FindBuyers = () => {
       setLoading(false);
     }
   };
-// Save AS PDF
+  // Save AS PDF
   const saveAsPDF = () => {
     const doc = new jsPDF();
 
@@ -88,8 +88,9 @@ const FindBuyers = () => {
         <div className="flex w-ful h-fit gap-4 ">
           <Input setAddress={setAddress} address={address} />
           <button
+            disabled={address.length <= 0}
             onClick={fetchBuyers}
-            className="bg-[#4608AD] text-white w-[70px] flex justify-center items-center  h-[50px] rounded-md text-sm">
+            className="bg-[#4608AD] disabled:bg-[#4708ad33] disabled:cursor-not-allowed text-white w-[70px] flex justify-center items-center  h-[50px] rounded-md text-sm">
             {loading ? (
               <p className="animate-spin">
                 <CgSpinnerAlt />
@@ -134,9 +135,14 @@ const FindBuyers = () => {
           </table>
         </div>
       </div>
-      <button onClick={saveAsPDF} className="bg-[#2196f3] text-white mt-4 p-2">
-        Save as PDF
-      </button>
+      <abbr title="Make sure the table contains at least one buyer before Saving As PDF ">
+        <button
+          disabled={buyers.length <= 0}
+          onClick={saveAsPDF}
+          className="bg-[#2196f3] disabled:bg-[#2195f35e] text-white mt-4 p-2">
+          Save as PDF
+        </button>
+      </abbr>
 
       {/* {loading && <p>Loading...</p>} */}
       {/* {error && <p style={{ color: "red" }}>Error: {error}</p>} */}

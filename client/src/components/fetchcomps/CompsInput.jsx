@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import axios from "axios";
-import BaseUrl from "../config";
+import BaseUrl from "../../config";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
@@ -28,6 +28,7 @@ const Input = ({ setAddress, address }) => {
 
       const data = response.data;
       const addresses = data.data.map((item) => item.address); // Extract addresses
+      console.log(addresses)
       setSuggestions(addresses); // Update suggestions with all addresses
       toast.success("AutoComplete Fetched Successfully");
     } catch (error) {
