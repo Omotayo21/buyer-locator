@@ -5,61 +5,75 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jsPDF from "jspdf";
 import Input from "../components/fetchcomps/CompsInput";
-import { CgSpinner, CgSpinnerAlt } from "react-icons/cg";
+import {  CgSpinnerAlt } from "react-icons/cg";
 import "jspdf-autotable";
 
-const FindBuyers = () => {
+const ComparableFinder = () => {
   const [address, setAddress] = useState("");
-  const [buyers, setBuyers] = useState([
-   
-  ]);
+  const [comparables, setComparable] = useState([] | "");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  // Fetch Buyers (Same as before)
-  const fetchBuyers = async () => {
+  // Fetch COmparables 
+  const fetchComparables = async () => {
     const url = `${BaseUrl}/api/properties`;
     try {
       setLoading(true);
-      setError(null);
       const response = await axios.post(`${BaseUrl}/api/comparables`, {
         address,
       });
 
       const data = response;
-      // setBuyers(data);
-      // toast.success("Success! Search completed.");
-      // console.log(data[0].owner1FirstName);
-      // console.log(data[0].owner1LastName);
-      console.log(data);
+      if (
+        Array.isArray(data.data) &&
+        data.data.every((item) => typeof item === "object")
+      ) {
+        setComparable(data.data);
+      } else {
+        toast.error(data.data.message);
+      }
+      setAddress("");
     } catch (err) {
-      // toast.error(err?.response?.data?.error || err?.message);
+      toast.error(err?.response?.data?.error || err?.message);
       setLoading(false);
-      console.log(err);
     } finally {
       setLoading(false);
     }
   };
-// Save AS PDF
+  // Save AS PDF
   const saveAsPDF = () => {
     const doc = new jsPDF();
 
     // Title
     doc.setFontSize(16);
-    doc.text("Buyer Locator Report", 10, 10);
+    doc.text("Comparable Locator Report", 10, 10);
 
     // Define table headers and rows
     const tableHeaders = [
-      ["Property ID", "Name", "Address", "Sales Price", "Year Built"],
+      [
+        "ID",
+        "Name",
+        "Address",
+        "Lot SQFT",
+        "Property SQFT",
+        "Age",
+        "Zip Code",
+        "Distance From Property",
+        "Year Built",
+      ],
     ];
 
-    const tableRows = buyers.map((buyer) => [
-      buyer?.propertyId || "N/A",
-      `${buyer?.owner1FirstName || ""} ${buyer?.owner1LastName || ""}`.trim() ||
-        "N/A",
-      buyer?.address?.address || "N/A",
-      buyer?.lastSaleAmount || "N/A",
-      buyer?.yearBuilt || "N/L",
+    const tableRows = comparables.map((comparable) => [
+      comparable?.id || "N/A",
+      `${comparable?.owner1FirstName || ""} ${
+        comparable?.owner1LastName || ""
+      }`.trim() || "N/A",
+      comparable?.address?.address || "N/A",
+      comparable?.lotSquareFeet || "N/A",
+      comparable?.squareFeet || "N/L",
+      comparable?.age || "N/L",
+      comparable?.address?.zip || "N/L",
+      comparable?.distance || "N/L",
+      comparable?.yearBuilt || "N/L",
     ]);
 
     // Add table to the document
@@ -68,7 +82,7 @@ const FindBuyers = () => {
       body: tableRows,
       startY: 20, // Position below the title
       styles: {
-        fontSize: 10, // Adjust font size
+        fontSize: 6, // Adjust font size
         cellPadding: 4, // Add padding
       },
       headStyles: {
@@ -79,17 +93,18 @@ const FindBuyers = () => {
     });
 
     // Save the PDF
-    doc.save("buyer-locator-report.pdf");
+    doc.save("comparable-locator-report.pdf");
   };
-
+  const disabled = !Array.isArray(comparables);
   return (
     <div className="lg:border mt-4  lg:border-gray-300 mx-auto  lg:p-0 max-w-xl h-4/5">
       <div className="w-full h-full ">
         <div className="flex w-ful h-fit gap-4 ">
           <Input setAddress={setAddress} address={address} />
           <button
-            onClick={fetchBuyers}
-            className="bg-[#4608AD] text-white w-[70px] flex justify-center items-center  h-[50px] rounded-md text-sm">
+          disabled={address.length <= 0}
+            onClick={fetchComparables}
+            className="bg-[#4608AD] disabled:bg-[#4708ad33] disabled:cursor-not-allowed text-white w-[70px] flex justify-center items-center  h-[50px] rounded-md text-sm">
             {loading ? (
               <p className="animate-spin">
                 <CgSpinnerAlt />
@@ -100,43 +115,50 @@ const FindBuyers = () => {
           </button>
         </div>
         <div className="overflow-y-auto h-96">
-          <table className="table-auto w-full text-left text-sm text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="py-3 px-6">
-                  ID
-                </th>
-                <th scope="col" className="py-3 px-6">
-                  Name
-                </th>
-                <th scope="col" className="py-3 px-6">
-                  12M Purchase
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {buyers.map((item) => (
-                <tr
-                  key={item.id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  <td className="py-4 px-6">{item.propertyId}</td>
-                  <td className="py-4 px-6">
-                    {`${item?.owner1FirstName || ""}  ${
-                      item?.owner1LastName || ""
-                    }`}
-                  </td>
-                  <td className="py-4 px-6">
-                    {item.portfolioPurchasedLast12Months}
-                  </td>
+          {comparables.length > 0 && (
+            <table className="table-auto w-full text-left text-sm text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="py-3 px-6">
+                    ID
+                  </th>
+                  <th scope="col" className="py-3 px-6">
+                    Name
+                  </th>
+                  <th scope="col" className="py-3 px-6">
+                    SqFt of the Property
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {comparables.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td className="py-4 px-6">{item?.id}</td>
+                    <td className="py-4 px-6">
+                      {`${item?.owner1FirstName || ""}  ${
+                        item?.owner1LastName || ""
+                      }`}
+                    </td>
+                    <td className="py-4 px-6">{item.squareFeet}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          {}
         </div>
       </div>
-      <button onClick={saveAsPDF} className="bg-[#2196f3] text-white mt-4 p-2">
-        Save as PDF
-      </button>
+      <abbr title="Make sure the table contains at least one COMPARABLE before Saving As PDF ">
+        <button
+          disabled={disabled}
+          onClick={saveAsPDF}
+          className="bg-[#2196f3] disabled:cursor-not-allowed disabled:bg-[#2195f35e] text-white mt-4 p-2">
+          Save as PDF
+        </button>
+      </abbr>
 
       {/* {loading && <p>Loading...</p>} */}
       {/* {error && <p style={{ color: "red" }}>Error: {error}</p>} */}
@@ -144,4 +166,4 @@ const FindBuyers = () => {
   );
 };
 
-export default FindBuyers;
+export default ComparableFinder;

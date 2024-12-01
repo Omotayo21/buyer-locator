@@ -29,8 +29,7 @@ const FindBuyers = () => {
       console.log(data);
       setBuyers(data);
       toast.success("Success! Search completed.");
-      console.log(data[0].owner1FirstName);
-      console.log(data[0].owner1LastName);
+    setAddress("")
       console.log(data);
     } catch (err) {
       toast.error(err?.response?.data?.error || err?.message);

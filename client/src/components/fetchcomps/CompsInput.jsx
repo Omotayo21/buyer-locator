@@ -47,7 +47,7 @@ const Input = ({ setAddress, address }) => {
 
   const handleInputChange = (event) => {
     const value = event.target.value;
-    setQuery(value);
+    setAddress(value)
     debouncedFetch(value); // Trigger debounced fetch
   };
 
@@ -55,7 +55,7 @@ const Input = ({ setAddress, address }) => {
     <div className="w-full relative">
       <input
         type="text"
-        value={query}
+        value={address}
         onChange={handleInputChange}
         placeholder="Enter property address"
         className="p-3 text-lg rounded-md border border-gray-300 w-full"

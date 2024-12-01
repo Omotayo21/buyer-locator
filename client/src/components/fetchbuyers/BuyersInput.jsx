@@ -6,12 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
 
 const Input = ({ setAddress, address }) => {
-  const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   const handleAddressSelect = (selectedAddress) => {
     setAddress(selectedAddress);
-    setQuery(selectedAddress);
+    setAddress(selectedAddress);
     setSuggestions([]); // Clear suggestions after selection
   };
 
@@ -47,8 +46,6 @@ const Input = ({ setAddress, address }) => {
 
   const handleInputChange = (event) => {
     const value = event.target.value;
-    console.log(value)
-    setQuery(value);
     setAddress(value)
     debouncedFetch(value); // Trigger debounced fetch
   };

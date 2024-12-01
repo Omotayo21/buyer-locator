@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import BuyerLocator from "./components/BuyerLocator";
 import FindBuyers from "./pages/FindBuyers";
-import FindComparables from "./pages/ComparableFinder";
+import ComparableFinder from "./pages/ComparableFinder";
 function App() {
   return (
     <div className="h-screen bg-white flex flex-col  w-full overflow-hidden ">
@@ -11,7 +11,7 @@ function App() {
         <Routes>
         <Route path="/locate-buyer" element={<BuyerLocator />}>
           <Route path="find-buyers" element={<FindBuyers />} />
-          <Route path="find-comparables" element={<FindComparables />} />
+          <Route path="find-comparables" element={<ComparableFinder />} />
         </Route>
         </Routes>
       </div>
