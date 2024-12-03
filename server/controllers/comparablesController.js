@@ -50,7 +50,7 @@ const adjustComparable = (subject, comp) => {
 };
 exports.getComparables = async (req, res) => {
   try {
-    const { address } = req.body;
+    const { address, criteria } = req.body;
 
     const data = await realEstateAPIService.fetchPropertyComparables(address);
     const subject = data.subject;
@@ -60,7 +60,7 @@ exports.getComparables = async (req, res) => {
 
     // Applying of appraisal rules and adjustments
     const twelveMonthsAgo = subYears(new Date(), 1);
-    const filteredComps = comps
+   /* const filteredComps = comps
       .filter((comp) => {
         const isSameType = comp.propertyType === subject.propertyType;
         console.log("Property Type Match:", isSameType);
@@ -88,8 +88,50 @@ exports.getComparables = async (req, res) => {
         .status(200)
         .json({ message: "No comparables found matching criteria." });
       return;
-    }
+    }*/
+ const filteredComps = comps
+   .filter((comp) => {
+     let isMatch = true;
 
+     if (criteria?.propertyType) {
+       isMatch = isMatch && comp.propertyType === subject.propertyType;
+     }
+
+     if (criteria?.squareFeet) {
+       isMatch =
+         isMatch &&
+         Math.abs((comp.squareFeet || 0) - (subject.squareFeet || 0)) <= 250;
+     }
+
+     if (criteria?.yearBuilt) {
+       isMatch =
+         isMatch &&
+         Math.abs((comp.yearBuilt || 0) - (subject.yearBuilt || 0)) <= 10;
+     }
+
+     if (criteria?.lotSquareFeet) {
+       isMatch =
+         isMatch &&
+         Math.abs((comp.lotSquareFeet || 0) - (subject.lotSquareFeet || 0)) <=
+           2500;
+     }
+
+     if (criteria?.lastSaleDate) {
+       isMatch =
+         isMatch &&
+         (comp.lastSaleDate
+           ? isAfter(parseISO(comp.lastSaleDate), twelveMonthsAgo)
+           : false);
+     }
+
+     return isMatch;
+   })
+   .map((comp) => adjustComparable(subject, comp));
+
+ if (filteredComps.length === 0) {
+   res.status(200).json({ message: "No comparables found matching criteria." });
+   return;
+ }
     const topComparables = filteredComps
       .sort((a, b) => b.adjustedValue - a.adjustedValue)
       .slice(0, 10);
