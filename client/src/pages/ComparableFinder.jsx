@@ -47,6 +47,9 @@ const ComparableFinder = ({
         console.log(comparables);
         // console.log(data.data);
         // calculateArvPercent()
+        localStorage.setItem("address", address);
+        console.log(address)
+        // setAddress("");
       } else {
         toast.error(data.data.message);
       }
@@ -142,7 +145,7 @@ const ComparableFinder = ({
         <div className="flex w-ful h-fit gap-4">
           <Input setAddress={setAddress} address={address} />
           <button
-            disabled={!address}
+            disabled={!address || !acquisitionPrice}
             onClick={fetchComparables}
             className="bg-[#4608AD] disabled:bg-[#4708ad33] disabled:cursor-not-allowed text-white w-[70px] flex justify-center items-center h-[50px] rounded-md text-sm">
             {loading ? (
@@ -209,6 +212,7 @@ const ComparableFinder = ({
                       </td>
                       <td className="py-4 px-6">
                         <Link
+                          onClick={() => setComparable([])}
                           state={{ address: address }}
                           to={`/locate-buyer/details/${detail.id}`}
                           className="text-blue-500 underline">
@@ -221,7 +225,7 @@ const ComparableFinder = ({
                             ? "text-green-600"
                             : "text-red-600"
                         }`}>
-                        {arvPercent}
+                        {arvPercent}%
                       </td>
                     </tr>
                   );

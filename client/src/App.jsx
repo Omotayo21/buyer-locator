@@ -23,7 +23,7 @@ function App() {
       <Header className="h-16 lg:h-20 flex-shrink-0" />
 
       {/* Main content taking the remaining space */}
-      <div className="w-full flex-grow bg-green-300 lg:max-w-screen-2xl lg:mx-auto">
+      <div className="w-full flex-grow bg-green00 lg:max-w-screen-2xl lg:mx-auto">
         <Suspense
           fallback={
             <div className="flex justify-center items-center h-full">
@@ -64,10 +64,11 @@ function App() {
             />
             <Route path="/poster" element={<Poster />} />
             <Route path="/facebookscrapper" element={<FacebookScrapper />} />
+            <Route path="*" element={<div>404 - Page Not Found</div>} />
           </Routes>
         </Suspense>
       </div>
-    </div> 
+    </div>
   );
 }
 

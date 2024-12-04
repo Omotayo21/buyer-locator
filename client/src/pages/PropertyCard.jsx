@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import BaseUrl from "../config";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { CgSpinnerAlt } from "react-icons/cg";
 
 const PropertyCard = () => {
   const location = useLocation();
@@ -24,7 +25,7 @@ const PropertyCard = () => {
       }
     }
   }, [location.state?.address]);
-
+  const [addrs, setAddrs] = useState(localStorage.getItem("address"));
   const saveAsPDF = (property) => {
     const doc = new jsPDF();
 
@@ -44,6 +45,7 @@ const PropertyCard = () => {
         "Zip Code",
         "Distance From Property",
         "Year Built",
+        "Est Value",
       ],
     ];
 
@@ -61,6 +63,7 @@ const PropertyCard = () => {
         property?.address?.zip || "N/A",
         property?.distance || "N/A",
         property?.yearBuilt || "N/A",
+        property?.estimatedValue || "N/A",
       ],
     ];
 
@@ -83,7 +86,6 @@ const PropertyCard = () => {
     // Save the PDF file
     doc.save("comparable-locator-report.pdf");
   };
-  console.log(id, address);
   useEffect(() => {
     // Fetch property details using ID and address
     const fetchPropertyDetails = async () => {
@@ -98,14 +100,15 @@ const PropertyCard = () => {
           `${BaseUrl}/api/comparables/getById`,
           {
             id,
-            address,
+            address: addrs,
           }
         );
         setProperty(response.data);
-        console.log(response);
+        console.log(id, addrs);
       } catch (err) {
         toast.error("Failed to fetch property details. Please try again.");
         console.log(err);
+        console.log(addrs);
       } finally {
         setLoading(false);
       }
@@ -114,12 +117,18 @@ const PropertyCard = () => {
     fetchPropertyDetails();
   }, [id, address]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!property) return <p>No property details available</p>;
-
+  if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="animate-spin">
+          <CgSpinnerAlt size={40} color="#4608AD" />
+        </p>
+      </div>
+    );
+  if (!property) return <p>No property details available {addrs}</p>;
   return (
-    <div className="w-full min-h-[100%] bg-blue-500">
-      <div className="max-w-lg mx-auto bg-red-500 shadow-md rounded-lg p-4 border">
+    <div className="w-full min-h-screen fl">
+      <div className="max-w-lg mx-auto my-auto  shadow-md rounded-lg p-4 border">
         <h1>{address}</h1>
         <div className="flex items-start gap-4">
           {/* Image */}
@@ -138,7 +147,9 @@ const PropertyCard = () => {
             <div className="text-sm text-gray-600 mt-1">
               <p>
                 <span className="font-bold">Estimated Value:</span> $
-                {property.estimatedValue || "N/A"}
+                {/* {`${property.estimatedValue.toLocaleString()}`} */}
+                {`${Number(property?.estimatedValue).toLocaleString()}` ||
+                  "N/A"}
               </p>
               <p>
                 <span className="font-bold">Status:</span>{" "}
@@ -196,7 +207,7 @@ const PropertyCard = () => {
         <div className="flex justify-between items-center mt-6">
           <div className="text-center">
             <p className="text-lg font-bold text-green-600">
-              ${property.estimatedEquity || "N/A"}
+              {`$${Number(property?.estimatedEquity).toLocaleString()}`}
             </p>
             <p className="text-sm text-gray-600">Est. Equity</p>
           </div>
@@ -217,7 +228,7 @@ const PropertyCard = () => {
         {/* Buttons */}
         <div className="flex justify-between mt-6">
           <button
-            onClick={() => saveAsPDF()}
+            onClick={() => saveAsPDF(property)}
             className="bg-green-500 text-white px-4 py-2 rounded-md">
             Save To PDF
           </button>
