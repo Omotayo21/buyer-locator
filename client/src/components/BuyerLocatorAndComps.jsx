@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import BaseUrl from "../config";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import jsPDF from "jspdf";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 const BuyerLocator = () => {
@@ -24,9 +23,9 @@ const BuyerLocator = () => {
           Find Buyers
         </Link>
         <Link
-          to="find-comparables" // Correct relative path
+          to="find-comps" // Correct relative path
           className={` font-medium font-mono ${
-            location.pathname===("/locate-buyer/find-comparables") 
+            location.pathname===("/locate-buyer/find-comps") 
               ? " pb-2 text-[#4608AD] border-b-[#4608AD] border-b-4  text-[#4608AD"
               : "pb-3  text-gray-500"
           }`}>
