@@ -60,35 +60,7 @@ exports.getComparables = async (req, res) => {
 
     // Applying of appraisal rules and adjustments
     const twelveMonthsAgo = subYears(new Date(), 1);
-   /* const filteredComps = comps
-      .filter((comp) => {
-        const isSameType = comp.propertyType === subject.propertyType;
-        console.log("Property Type Match:", isSameType);
-        const within250SqFt =
-          Math.abs((comp.squareFeet || 0) - (subject.squareFeet || 0)) <= 250;
-        console.log("Square Feet Within 250:", within250SqFt);
-        const within10Years =
-          Math.abs((comp.yearBuilt || 0) - (subject.yearBuilt || 0)) <= 10;
-        console.log("Year Built Within 10 Years:", within10Years);
-        const withinLotSize =
-          Math.abs((comp.lotSquareFeet || 0) - (subject.lotSquareFeet || 0)) <=
-          2500;
-        console.log("Lot Size Within 2500:", withinLotSize);
-        const lastSaleDateValid = comp.lastSaleDate
-          ? isAfter(parseISO(comp.lastSaleDate), twelveMonthsAgo)
-          : false;
-        console.log("Last Sale Date Valid:", lastSaleDateValid);
-       return isSameType && within250SqFt && withinLotSize && lastSaleDateValid;
-      })
-      .map((comp) => adjustComparable(subject, comp));
-
-    if (filteredComps.length === 0) {
-      console.warn("No comparables matched the filtering criteria.");
-      res
-        .status(200)
-        .json({ message: "No comparables found matching criteria." });
-      return;
-    }*/
+ 
  const filteredComps = comps
    .filter((comp) => {
      let isMatch = true;
@@ -139,5 +111,39 @@ exports.getComparables = async (req, res) => {
     res.status(200).json(topComparables);
   } catch (error) {
     console.log(error);
+  }
+};
+exports.getComparableById = async (req, res) => {
+  try {
+    const { id, address } = req.body; // Get both id and address from the body
+
+   // console.log("ID from body:", id);
+   // console.log("Address from body:", address);
+
+    // Fetch comparables based on the address
+    const data = await realEstateAPIService.fetchPropertyComparables(address);
+
+   // console.log("Fetched comparables data:", data);
+
+    if (!data || !data.comps) {
+      return res
+        .status(500)
+        .json({ message: "Failed to fetch comparables data." });
+    }
+
+    // Find the specific comp by ID
+    const comparable = data.comps.find(
+      (comp) => String(comp.id) === String(id)
+    );
+    console.log("Found comparable:", comparable);
+
+    if (!comparable) {
+      return res.status(404).json({ message: "Comparable not found." });
+    }
+
+    res.status(200).json(comparable);
+  } catch (error) {
+    console.error("Error fetching comparable:", error.message);
+    res.status(500).json({ message: "Failed to fetch comparable." });
   }
 };

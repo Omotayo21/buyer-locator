@@ -139,7 +139,7 @@ import BaseUrl from "./config";
 export default App;
 */
 
-function ComparableFinder() {
+/*function ComparableFinder() {
   const [address, setAddress] = useState("");
   const [results, setResults] = useState([]);
    const [criteria, setCriteria] = useState({
@@ -300,3 +300,82 @@ export default ComparableFinder;
 
 export default FilterForm;*/
 
+
+
+const FetchComparable = () => {
+  const [subjectAddress, setSubjectAddress] = useState("");
+  const [compId, setCompId] = useState("");
+  const [comparable, setComparable] = useState(null);
+  const [error, setError] = useState("");
+
+  const handleFetch = async () => {
+    try {
+      setError(""); // Clear previous errors
+
+      // Validate inputs
+      if (!subjectAddress || !compId) {
+        setError("Both Subject Address and Comp ID are required.");
+        return;
+      }
+
+      // Send a POST request to the backend
+      const response = await axios.post(
+        `${BaseUrl}/api/comparables/getById`,
+        {
+          address: subjectAddress,
+          id: compId,
+        }
+      );
+
+      // Update state with fetched comparable
+      setComparable(response.data);
+    } catch (err) {
+      // Handle error
+      console.error(err);
+      setError(
+        err.response?.data?.message ||
+          "An error occurred while fetching the comparable."
+      );
+    }
+  };
+
+  return (
+    <div className="container">
+      <h1>Fetch Comparable</h1>
+      <div className="form-group">
+        <label>Subject Address:</label>
+        <input
+          type="text"
+          value={subjectAddress}
+          onChange={(e) => setSubjectAddress(e.target.value)}
+          placeholder="Enter subject address"
+          className="form-control"
+        />
+      </div>
+      <div className="form-group">
+        <label>Comp ID:</label>
+        <input
+          type="text"
+          value={compId}
+          onChange={(e) => setCompId(e.target.value)}
+          placeholder="Enter comp ID"
+          className="form-control"
+        />
+      </div>
+      <button onClick={handleFetch} className="btn btn-primary">
+        Fetch Comparable
+      </button>
+
+      {error && <div className="alert alert-danger mt-3">{error}</div>}
+
+      {comparable && (
+        <div className="mt-4">
+          <h2>Comparable Details:</h2>
+          <pre>{JSON.stringify(comparable, null, 2)}</pre>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default FetchComparable;
