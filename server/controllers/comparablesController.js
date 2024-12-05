@@ -1,6 +1,26 @@
 const realEstateAPIService = require("../services/realEstateAPIService");
 const { subYears, isAfter, parseISO } = require("date-fns");
 
+// Function to calculate distance using the Haversine formula
+const calculateDistanceInMiles = (lat1, lon1, lat2, lon2) => {
+  const toRadians = (degrees) => (degrees * Math.PI) / 180;
+
+  const earthRadiusMiles = 3958.8; // Earth's radius in miles
+  const deltaLat = toRadians(lat2 - lat1);
+  const deltaLon = toRadians(lon2 - lon1);
+
+  const a =
+    Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+    Math.cos(toRadians(lat1)) *
+      Math.cos(toRadians(lat2)) *
+      Math.sin(deltaLon / 2) *
+      Math.sin(deltaLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return earthRadiusMiles * c;
+};
+
 const adjustComparable = (subject, comp) => {
   let adjustedValue = parseFloat(comp.estimatedValue || 0);
 
@@ -48,6 +68,7 @@ const adjustComparable = (subject, comp) => {
   comp.adjustedValue = adjustedValue;
   return comp;
 };
+
 exports.getComparables = async (req, res) => {
   try {
     const { address, criteria } = req.body;
@@ -55,55 +76,68 @@ exports.getComparables = async (req, res) => {
     const data = await realEstateAPIService.fetchPropertyComparables(address);
     const subject = data.subject;
     const comps = data.comps;
-    //console.log("Subject:", data.subject);
-    // console.log("Comparables:", data.comps);
 
-    // Applying of appraisal rules and adjustments
+    // Applying appraisal rules and adjustments
     const twelveMonthsAgo = subYears(new Date(), 1);
- 
- const filteredComps = comps
-   .filter((comp) => {
-     let isMatch = true;
 
-     if (criteria?.propertyType) {
-       isMatch = isMatch && comp.propertyType === subject.propertyType;
-     }
+    const filteredComps = comps
+      .filter((comp) => {
+        let isMatch = true;
 
-     if (criteria?.squareFeet) {
-       isMatch =
-         isMatch &&
-         Math.abs((comp.squareFeet || 0) - (subject.squareFeet || 0)) <= 250;
-     }
+        if (criteria?.propertyType) {
+          isMatch = isMatch && comp.propertyType === subject.propertyType;
+        }
 
-     if (criteria?.yearBuilt) {
-       isMatch =
-         isMatch &&
-         Math.abs((comp.yearBuilt || 0) - (subject.yearBuilt || 0)) <= 10;
-     }
+        if (criteria?.squareFeet) {
+          isMatch =
+            isMatch &&
+            Math.abs((comp.squareFeet || 0) - (subject.squareFeet || 0)) <= 250;
+        }
 
-     if (criteria?.lotSquareFeet) {
-       isMatch =
-         isMatch &&
-         Math.abs((comp.lotSquareFeet || 0) - (subject.lotSquareFeet || 0)) <=
-           2500;
-     }
+        if (criteria?.yearBuilt) {
+          isMatch =
+            isMatch &&
+            Math.abs((comp.yearBuilt || 0) - (subject.yearBuilt || 0)) <= 10;
+        }
 
-     if (criteria?.lastSaleDate) {
-       isMatch =
-         isMatch &&
-         (comp.lastSaleDate
-           ? isAfter(parseISO(comp.lastSaleDate), twelveMonthsAgo)
-           : false);
-     }
+        if (criteria?.lotSquareFeet) {
+          isMatch =
+            isMatch &&
+            Math.abs(
+              (comp.lotSquareFeet || 0) - (subject.lotSquareFeet || 0)
+            ) <= 2500;
+        }
 
-     return isMatch;
-   })
-   .map((comp) => adjustComparable(subject, comp));
+        if (criteria?.lastSaleDate) {
+          isMatch =
+            isMatch &&
+            (comp.lastSaleDate
+              ? isAfter(parseISO(comp.lastSaleDate), twelveMonthsAgo)
+              : false);
+        }
 
- if (filteredComps.length === 0) {
-   res.status(200).json({ message: "No comparables found matching criteria." });
-   return;
- }
+        // Check if comp is within 0.5 miles of the subject property
+        if (criteria?.withinHalfMile) {
+          const distance = calculateDistanceInMiles(
+            subject.latitude,
+            subject.longitude,
+            comp.latitude,
+            comp.longitude
+          );
+          isMatch = isMatch && distance <= 0.5;
+        }
+
+        return isMatch;
+      })
+      .map((comp) => adjustComparable(subject, comp));
+
+    if (filteredComps.length === 0) {
+      res
+        .status(200)
+        .json({ message: "No comparables found matching criteria." });
+      return;
+    }
+
     const topComparables = filteredComps
       .sort((a, b) => b.adjustedValue - a.adjustedValue)
       .slice(0, 10);
@@ -111,19 +145,21 @@ exports.getComparables = async (req, res) => {
     res.status(200).json(topComparables);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "An error occurred." });
   }
 };
+
 exports.getComparableById = async (req, res) => {
   try {
     const { id, address } = req.body; // Get both id and address from the body
 
-   // console.log("ID from body:", id);
-   // console.log("Address from body:", address);
+    // console.log("ID from body:", id);
+    // console.log("Address from body:", address);
 
     // Fetch comparables based on the address
     const data = await realEstateAPIService.fetchPropertyComparables(address);
 
-   // console.log("Fetched comparables data:", data);
+    // console.log("Fetched comparables data:", data);
 
     if (!data || !data.comps) {
       return res
