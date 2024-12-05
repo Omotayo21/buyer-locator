@@ -55,13 +55,13 @@ function App() {
                   />
                 }
               />
+              <Route
+                path="find-comps/details/:id"
+                element={<PropertyCard property={detail} />}
+              />
             </Route>
 
             {/* Other routes */}
-            <Route
-              path="/locate-buyer/details/:id"
-              element={<PropertyCard property={detail} />}
-            />
             <Route path="/poster" element={<Poster />} />
             <Route path="/facebookscrapper" element={<FacebookScrapper />} />
             <Route path="*" element={<div>404 - Page Not Found</div>} />

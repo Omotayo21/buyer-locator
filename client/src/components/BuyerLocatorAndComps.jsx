@@ -25,7 +25,7 @@ const BuyerLocator = () => {
         <Link
           to="find-comps" // Correct relative path
           className={` font-medium font-mono ${
-            location.pathname===("/locate-buyer/find-comps") 
+            location.pathname.includes("/locate-buyer/find-comps") 
               ? " pb-2 text-[#4608AD] border-b-[#4608AD] border-b-4  text-[#4608AD"
               : "pb-3  text-gray-500"
           }`}>

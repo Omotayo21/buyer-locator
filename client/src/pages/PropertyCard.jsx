@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams ,useNavigate} from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,6 +7,7 @@ import BaseUrl from "../config";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { CgSpinnerAlt } from "react-icons/cg";
+import { IoMdArrowBack } from "react-icons/io";
 
 const PropertyCard = () => {
   const location = useLocation();
@@ -31,7 +32,7 @@ const PropertyCard = () => {
 
     // Title
     doc.setFontSize(16);
-    doc.text("Comparable Locator Report", 10, 10);
+    doc.text("Individual Comparable Locator Report", 10, 10);
 
     // Define table headers
     const tableHeaders = [
@@ -84,7 +85,7 @@ const PropertyCard = () => {
     });
 
     // Save the PDF file
-    doc.save("comparable-locator-report.pdf");
+    doc.save("individual comparable-locator-report.pdf");
   };
   useEffect(() => {
     // Fetch property details using ID and address
@@ -116,7 +117,7 @@ const PropertyCard = () => {
 
     fetchPropertyDetails();
   }, [id, address]);
-
+const navigate=useNavigate()
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -128,7 +129,12 @@ const PropertyCard = () => {
   if (!property) return <p>No property details available {addrs}</p>;
   return (
     <div className="w-full min-h-screen fl">
-      <div className="max-w-lg mx-auto my-auto  shadow-md rounded-lg p-4 border">
+      <div className="max-w-xl mx-auto my-auto  shadow-md rounded-lg p-4 border">
+        <div onClick={()=>navigate("/locate-buyer/find-comps")} className="flex items-center gap-2 cursor-pointer mb-6">
+          <IoMdArrowBack />
+
+          <h3>Go back</h3>
+        </div>
         <h1>{address}</h1>
         <div className="flex items-start gap-4">
           {/* Image */}

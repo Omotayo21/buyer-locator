@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
 
-const Input = ({ setAddress, address }) => {
+const Input = ({ setAddress, address, setComparable }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
@@ -28,7 +28,7 @@ const Input = ({ setAddress, address }) => {
 
       const data = response.data;
       const addresses = data.data.map((item) => item.address); // Extract addresses
-      console.log(addresses)
+      console.log(addresses);
       setSuggestions(addresses); // Update suggestions with all addresses
       toast.success("AutoComplete Fetched Successfully");
     } catch (error) {
@@ -47,8 +47,13 @@ const Input = ({ setAddress, address }) => {
 
   const handleInputChange = (event) => {
     const value = event.target.value;
-    setAddress(value)
-    debouncedFetch(value); // Trigger debounced fetch
+    setAddress(value);
+    if (setComparable) {
+      setComparable([]);
+      debouncedFetch(value)
+    } else {
+      debouncedFetch(value); // Trigger debounced fetch
+    }
   };
 
   return (
