@@ -148,6 +148,7 @@ export default App;
     yearBuilt: false,
     lotSquareFeet: false,
     lastSaleDate: false,
+    withinHalfMile: false,
   });
 const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;

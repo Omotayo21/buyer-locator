@@ -59,9 +59,9 @@ const fetchPropertyDetails = async (encodedAddress) => {
  
 };
 
-const fetchPropertyComparables = async (address) => {
+/*const fetchPropertyComparables = async (address) => {
   try {
-    const API_KEY = process.env.REAL_ESTATE_API_KEY; 
+    const API_KEY = process.env.REAL_ESTATE_API_KEY;
 
     const options = {
       method: "POST",
@@ -74,11 +74,10 @@ const fetchPropertyComparables = async (address) => {
       },
       data: {
         address: address,
-       
+        max_radius_miles: 0.5,
         max_results: 50,
       },
     };
-
     const response = await axios.request(options);
     //console.log(response.data);
     return response.data;
@@ -86,9 +85,47 @@ const fetchPropertyComparables = async (address) => {
     console.error("Error fetching property data:", error);
     throw new Error("Failed to fetch property data from the API");
   }
+};*/
+
+
+
+
+const fetchPropertyComparables = async (options) => {
+  try {
+    const API_KEY = process.env.REAL_ESTATE_API_KEY;
+
+    // Dynamically build request data
+    const requestData = {
+      address: options.address,
+      max_results: 50,
+    };
+
+    if (options.max_radius_miles) {
+      requestData.max_radius_miles = options.max_radius_miles;
+    }
+
+    const apiOptions = {
+      method: "POST",
+      url: "https://api.realestateapi.com/v3/PropertyComps",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        "x-api-key": API_KEY,
+      },
+      data: requestData,
+    };
+
+    const response = await axios.request(apiOptions);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching property data:", error);
+    throw new Error("Failed to fetch property data from the API");
+  }
 };
+
 module.exports = {
   fetchAutocompleteSuggestions,
   fetchPropertyDetails,
   fetchPropertyComparables,
+ 
 };

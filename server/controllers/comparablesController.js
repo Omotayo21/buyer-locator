@@ -1,26 +1,6 @@
 const realEstateAPIService = require("../services/realEstateAPIService");
 const { subYears, isAfter, parseISO } = require("date-fns");
 
-// Function to calculate distance using the Haversine formula
-const calculateDistanceInMiles = (lat1, lon1, lat2, lon2) => {
-  const toRadians = (degrees) => (degrees * Math.PI) / 180;
-
-  const earthRadiusMiles = 3958.8; // Earth's radius in miles
-  const deltaLat = toRadians(lat2 - lat1);
-  const deltaLon = toRadians(lon2 - lon1);
-
-  const a =
-    Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-    Math.cos(toRadians(lat1)) *
-      Math.cos(toRadians(lat2)) *
-      Math.sin(deltaLon / 2) *
-      Math.sin(deltaLon / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return earthRadiusMiles * c;
-};
-
 const adjustComparable = (subject, comp) => {
   let adjustedValue = parseFloat(comp.estimatedValue || 0);
 
@@ -73,7 +53,15 @@ exports.getComparables = async (req, res) => {
   try {
     const { address, criteria } = req.body;
 
-    const data = await realEstateAPIService.fetchPropertyComparables(address);
+    // Build options based on criteria
+    const options = { address };
+
+    if (criteria?.withinHalfMile) {
+      options.max_radius_miles = 0.5; // Include the parameter if selected
+    }
+
+    const data = await realEstateAPIService.fetchPropertyComparables(options);
+
     const subject = data.subject;
     const comps = data.comps;
 
@@ -114,17 +102,6 @@ exports.getComparables = async (req, res) => {
             (comp.lastSaleDate
               ? isAfter(parseISO(comp.lastSaleDate), twelveMonthsAgo)
               : false);
-        }
-
-        // Check if comp is within 0.5 miles of the subject property
-        if (criteria?.withinHalfMile) {
-          const distance = calculateDistanceInMiles(
-            subject.latitude,
-            subject.longitude,
-            comp.latitude,
-            comp.longitude
-          );
-          isMatch = isMatch && distance <= 0.5;
         }
 
         return isMatch;
