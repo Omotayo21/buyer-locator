@@ -114,6 +114,7 @@ exports.getComparables = async (req, res) => {
         .json({ message: "No comparables found matching criteria." });
       return;
     }
+   
 
     const topComparables = filteredComps
       .sort((a, b) => b.adjustedValue - a.adjustedValue)
@@ -134,7 +135,7 @@ exports.getComparableById = async (req, res) => {
     // console.log("Address from body:", address);
 
     // Fetch comparables based on the address
-    const data = await realEstateAPIService.fetchPropertyComparables(address);
+    const data = await realEstateAPIService.fetchPropertyComparables({address});
 
     // console.log("Fetched comparables data:", data);
 
