@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams ,useNavigate} from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,18 +15,16 @@ const PropertyCard = () => {
   const [property, setProperty] = useState(null);
   const [addr, setAddr] = useState(null);
   const [loading, setLoading] = useState(true);
-  const address = location.state?.address || addr; // Use passed address or fallback to addr
-
-  useEffect(() => {
-    // Load the address from localStorage if not provided via location.state
-    if (!location.state?.address) {
-      const savedAddress = localStorage.getItem("propertyAddress");
-      if (savedAddress) {
-        setAddr(JSON.parse(savedAddress));
-      }
-    }
-  }, [location.state?.address]);
-  const [addrs, setAddrs] = useState(localStorage.getItem("address"));
+  const address = location.state?.address; // Use passed address or fallback to addr
+  // useEffect(() => {
+  //   // Load the address from localStorage if not provided via location.state
+  //   if (!location.state?.address) {
+  //     const savedAddress = localStorage.getItem("propertyAddress");
+  //     if (savedAddress) {
+  //       setAddr(JSON.parse(savedAddress));
+  //     }
+  //   }
+  // }, [location.state?.address]);
   const saveAsPDF = (property) => {
     const doc = new jsPDF();
 
@@ -101,15 +99,13 @@ const PropertyCard = () => {
           `${BaseUrl}/api/comparables/getById`,
           {
             id,
-            address: addrs,
+            address,
           }
         );
         setProperty(response.data);
-        console.log(id, addrs);
       } catch (err) {
         toast.error("Failed to fetch property details. Please try again.");
         console.log(err);
-        console.log(addrs);
       } finally {
         setLoading(false);
       }
@@ -117,7 +113,7 @@ const PropertyCard = () => {
 
     fetchPropertyDetails();
   }, [id, address]);
-const navigate=useNavigate()
+  const navigate = useNavigate();
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -126,21 +122,24 @@ const navigate=useNavigate()
         </p>
       </div>
     );
-  if (!property) return <p>No property details available {addrs}</p>;
+  if (!property) return <p>No property details available {address}</p>;
   return (
-    <div className="w-full min-h-screen fl">
+    <div className="w-full h-fit">
       <div className="max-w-xl mx-auto my-auto  shadow-md rounded-lg p-4 border">
-        <div onClick={()=>navigate("/locate-buyer/find-comps")} className="flex items-center gap-2 cursor-pointer mb-6">
+        <div
+          onClick={() => {
+            document.documentElement.scrollTop = 0;
+            navigate("/locate-buyer/find-comps")}}
+          className="flex items-center gap-2 cursor-pointer mb-6">
           <IoMdArrowBack />
 
           <h3>Go back</h3>
         </div>
-        <h1>{address}</h1>
         <div className="flex items-start gap-4">
           {/* Image */}
           <div className="w-1/3">
             <img
-              src={property.imageUrl || "https://via.placeholder.com/150"}
+              src={property?.imageUrl || "https://via.placeholder.com/150"}
               alt="Property"
               className="rounded-lg w-full object-cover"
             />
@@ -148,7 +147,7 @@ const navigate=useNavigate()
           {/* Address & Info */}
           <div className="flex-1">
             <h2 className="text-lg font-semibold text-gray-900">
-              {property.owner1FirstName || "Unknown Owner"}
+              {property?.owner1FirstName || "Unknown Owner"}
             </h2>
             <div className="text-sm text-gray-600 mt-1">
               <p>
@@ -159,23 +158,23 @@ const navigate=useNavigate()
               </p>
               <p>
                 <span className="font-bold">Status:</span>{" "}
-                {property.status || "N/A"}
+                {property?.status || "N/A"}
               </p>
               <p>
                 <span className="font-bold">Distressed:</span>{" "}
-                {property.distressed ? "Yes" : "No"}
+                {property?.distressed ? "Yes" : "No"}
               </p>
               <p>
                 <span className="font-bold">Liens:</span> $
-                {property.liens || "N/A"}
+                {property?.liens || "N/A"}
               </p>
             </div>
             <div className="mt-2 flex gap-2">
               <span className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded">
-                {property.ownerType || "N/A"}
+                {property?.ownerType || "N/A"}
               </span>
               <span className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded">
-                {property.occupancyStatus || "N/A"}
+                {property?.occupancyStatus || "N/A"}
               </span>
             </div>
           </div>
@@ -185,25 +184,25 @@ const navigate=useNavigate()
         <div className="grid grid-cols-4 text-center gap-4 mt-4">
           <div>
             <p className="text-lg font-bold text-gray-900">
-              {property.bedrooms || "N/A"}
+              {property?.bedrooms || "N/A"}
             </p>
             <p className="text-sm text-gray-600">Beds</p>
           </div>
           <div>
             <p className="text-lg font-bold text-gray-900">
-              {property.bathrooms || "N/A"}
+              {property?.bathrooms || "N/A"}
             </p>
             <p className="text-sm text-gray-600">Baths</p>
           </div>
           <div>
             <p className="text-lg font-bold text-gray-900">
-              {property.squareFeet || "N/A"}
+              {property?.squareFeet || "N/A"}
             </p>
             <p className="text-sm text-gray-600">SqFt</p>
           </div>
           <div>
             <p className="text-lg font-bold text-gray-900">
-              {property.yearBuilt || "N/A"}
+              {property?.yearBuilt || "N/A"}
             </p>
             <p className="text-sm text-gray-600">Yr. Built</p>
           </div>
@@ -219,13 +218,13 @@ const navigate=useNavigate()
           </div>
           <div className="text-center">
             <p className="text-lg font-bold text-green-600">
-              ${property.avgComps || "N/A"}
+              ${property?.avgComps || "N/A"}
             </p>
             <p className="text-sm text-gray-600">Avg. Comps</p>
           </div>
           <div className="text-center">
             <p className="text-lg font-bold text-green-600">
-              ${property.estimatedRent || "N/A"}
+              ${property?.estimatedRent || "N/A"}
             </p>
             <p className="text-sm text-gray-600">Est. Rent</p>
           </div>

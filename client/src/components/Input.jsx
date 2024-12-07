@@ -4,43 +4,22 @@ import BaseUrl from "../config";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
+import { fetchSuggestions } from "../services/apiService";
 
 const Input = ({ setAddress, address, setComparable }) => {
-  const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   const handleAddressSelect = (selectedAddress) => {
     setAddress(selectedAddress);
-    setQuery(selectedAddress);
     setSuggestions([]); // Clear suggestions after selection
   };
 
-  // Function to fetch suggestions from the AutoComplete API
-  const fetchSuggestions = async (searchQuery) => {
-    if (!searchQuery) {
-      setSuggestions([]); // Clear suggestions if input is empty
-      return;
-    }
-    try {
-      const response = await axios.post(`${BaseUrl}/api/autocomplete`, {
-        query: searchQuery,
-      });
 
-      const data = response.data;
-      const addresses = data.data.map((item) => item.address); // Extract addresses
-      console.log(addresses);
-      setSuggestions(addresses); // Update suggestions with all addresses
-      toast.success("AutoComplete Fetched Successfully");
-    } catch (error) {
-      toast.error("Failed to fetch suggestions");
-      console.error(error);
-    }
-  };
 
   // Debounced function to delay API calls while typing
   const debouncedFetch = useCallback(
     _.debounce((searchQuery) => {
-      fetchSuggestions(searchQuery);
+      fetchSuggestions(searchQuery,setSuggestions);
     }, 500),
     [] // Empty dependencies array ensures the debounce function is created only once
   );

@@ -18,12 +18,12 @@ function App() {
   const [comparables, setComparable] = useState([]);
 
   return (
-    <div className="bg-white flex flex-col w-full min-h-screen overflow-hidden">
+    <div className=" flex flex-col w-full min-h-screen overflow-hidden">
       {/* Header with fixed height */}
       <Header className="h-16 lg:h-20 flex-shrink-0" />
 
       {/* Main content taking the remaining space */}
-      <div className="w-full flex-grow bg-green00 lg:max-w-screen-2xl lg:mx-auto">
+      <div className="w-full flex-grow bg-green-400 h-full lg:max-w-screen-2xl lg:mx-auto">
         <Suspense
           fallback={
             <div className="flex justify-center items-center h-full">

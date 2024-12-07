@@ -5,18 +5,16 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jsPDF from "jspdf";
 import Input from "../components/Input";
-import {  CgSpinnerAlt } from "react-icons/cg";
+import { CgSpinnerAlt } from "react-icons/cg";
 import "jspdf-autotable";
 
 const FindBuyers = () => {
   const [address, setAddress] = useState("");
   const [buyers, setBuyers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   // Fetch Buyers (Same as before)
   const fetchBuyers = async () => {
-    console.log(address);
     const url = `${BaseUrl}/api/properties`;
     try {
       setLoading(true);
@@ -26,15 +24,11 @@ const FindBuyers = () => {
       });
 
       const data = response.data.data;
-      console.log(data);
       setBuyers(data);
       toast.success("Success! Search completed.");
-    setAddress("")
-      console.log(data);
     } catch (err) {
       toast.error(err?.response?.data?.error || err?.message);
       setLoading(false);
-      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -85,7 +79,7 @@ const FindBuyers = () => {
     <div className="lg:border mt-4  lg:border-gray-300 mx-auto  lg:p-0 max-w-xl h-4/5">
       <div className="w-full h-full ">
         <div className="flex w-ful h-fit gap-4 ">
-          <Input setAddress={setAddress} address={address} /> 
+          <Input setAddress={setAddress} address={address} />
           <button
             disabled={address.length <= 0}
             onClick={fetchBuyers}
@@ -143,8 +137,6 @@ const FindBuyers = () => {
         </button>
       </abbr>
 
-      {/* {loading && <p>Loading...</p>} */}
-      {/* {error && <p style={{ color: "red" }}>Error: {error}</p>} */}
     </div>
   );
 };
