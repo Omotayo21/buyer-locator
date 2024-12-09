@@ -14,7 +14,10 @@ const Header = () => {
           />
           <h1 className="font-bold text-2xl hidden sm:block">SocialPost Pro</h1>
         </div>
-        <div className="flex gap-3 h-full items-end">
+        <div
+          className={` gap-3 h-full items-end ${
+            location.pathname === "/login" || location.pathname==="/signup" ? "hidden" : "flex"
+          }`}>
           <Link
             to="/locate-buyer/find-buyers"
             className={` font-medium font-mono ${
@@ -24,9 +27,6 @@ const Header = () => {
             }`}>
             Buyer Locator and Comps
           </Link>
-
-          {/* <Link>Buyer Locator</Link>
-        <Link>Buyer Locator</Link> */}
         </div>
       </div>
     </div>

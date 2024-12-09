@@ -26,6 +26,15 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
     withinHalfMile: false,
   });
 
+  const criteriaLabels = {
+    propertyType: "Property of thesame Type",
+    squareFeet: "Within 250 sqft of the subject property",
+    yearBuilt: "1-year comp sale",
+    lotSquareFeet: "Lot Square Feet",
+    lastSaleDate: "Sold within the last 10 years",
+    withinHalfMile: "Property within Half Mile",
+  };
+
   const { id } = useParams();
 
   const fetchComparables = async () => {
@@ -123,10 +132,15 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
                 <input
                   type="checkbox"
                   checked={criteria[key]}
-                  onChange={() => handleCheckboxChange(key)}
+                  onChange={() =>
+                    setCriteria((prev) => ({
+                      ...prev,
+                      [key]: !prev[key],
+                    }))
+                  }
                   className="w-4 h-4"
                 />
-                <span className="text-sm">{key}</span>
+                <span className="text-sm">{criteriaLabels[key]}</span>
               </label>
             ))}
           </div>
