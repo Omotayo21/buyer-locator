@@ -7,7 +7,7 @@ const errorController = require("./controllers/errorController");
 const autocompleteRoutes = require("./routes/autocompleteRoutes");
 const propertyRoutes = require("./routes/propertyRoutes");
 const comparablesRoutes = require("./routes/comparablesRoutes");
-const authRoutes = require("./routes/authRoutes");
+//const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
 const http = require("http");
 
@@ -29,7 +29,7 @@ const port = process.env.PORT || 3000;
 app.use("/api/properties", propertyRoutes);
 app.use("/api/autocomplete", autocompleteRoutes);
 app.use("/api/comparables", comparablesRoutes); 
-app.use("/api/auth", authRoutes);
+//app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello from Node API Server Updated");
