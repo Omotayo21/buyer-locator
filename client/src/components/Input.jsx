@@ -1,7 +1,4 @@
 import React, { useCallback, useState } from "react";
-import axios from "axios";
-import BaseUrl from "../config";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
 import { fetchSuggestions } from "../services/apiService";

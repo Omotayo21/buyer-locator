@@ -22,3 +22,21 @@ export const fetchSuggestions = async (searchQuery, setSuggestions) => {
     console.error(error);
   }
 };
+export const Login = async (email, password) => {
+  if (!email || !password) {
+    return;
+  }
+  try {
+    const response = await axios.post(`${BaseUrl}/api/autocomplete`, {
+      email,
+      password,
+    });
+
+    const data = response.data;
+    console.log(data)
+    toast.success("Login Successful");
+  } catch (error) {
+    toast.error("Failed to fetch suggestions");
+    console.error(error);
+  }
+};

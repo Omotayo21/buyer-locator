@@ -12,18 +12,17 @@ const Login = React.lazy(() => import("./pages/Login"));
 const Signup = React.lazy(() => import("./pages/Signup"));
 const ComparableFinder = React.lazy(() => import("./pages/ComparableFinder"));
 const PropertyCard = React.lazy(() => import("./pages/PropertyCard"));
-
 function App() {
   const [detail, setDetail] = useState({}); // State for selected comparable
   const [comparables, setComparable] = useState([]);
 
   return (
-    <div className=" flex flex-col w-full min-h-screen overflow-hidden">
+    <div className=" flex relative flex-col w-full min-h-screen overflow-hidden">
       {/* Header with fixed height */}
       <Header className="h-16 lg:h-20 flex-shrink-0" />
 
       {/* Main content taking the remaining space */}
-      <div className="w-full flex-grow  h-full lg:max-w-screen-2xl lg:mx-auto">
+      <div className="w-full flex-grow mt-16  h-full lg:max-w-screen-2xl lg:mx-auto">
         <Suspense
           fallback={
             <div className="flex justify-center items-center h-screen">
@@ -41,30 +40,30 @@ function App() {
 
             {/* Main Buyer Locator route */}
             <Route path="/locate-buyer" element={<BuyerLocator />}>
-              {/* Default route inside locate-buyer */}
-              <Route index element={<Navigate to="find-buyers" replace />} />
-              <Route path="find-buyers" element={<FindBuyers />} />
-              <Route
-                path="find-comps"
-                element={
-                  <ComparableFinder
-                    comparables={comparables}
-                    setComparable={setComparable}
-                    setDetail={setDetail}
-                    detail={detail}
-                  />
-                }
-              />
-              <Route
-                path="find-comps/details/:id"
-                element={<PropertyCard property={detail} />}
-              />
+            {/* Default route inside locate-buyer */}
+            <Route index element={<Navigate to="find-buyers" replace />} />
+            <Route path="find-buyers" element={<FindBuyers />} />
+            <Route
+              path="find-comps"
+              element={
+                <ComparableFinder
+                  comparables={comparables}
+                  setComparable={setComparable}
+                  setDetail={setDetail}
+                  detail={detail}
+                />
+              }
+            />
+            <Route
+              path="find-comps/details/:id"
+              element={<PropertyCard property={detail} />}
+            />
             </Route>
 
             {/* Other routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="*" element={<div>404 - Page Not Found</div>} />
+            <Route path="*" element={<div className="flex justify-center items-center h-screen ">404 - Page Not Found</div>} />
           </Routes>
         </Suspense>
       </div>

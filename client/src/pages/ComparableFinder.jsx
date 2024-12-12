@@ -10,12 +10,12 @@ import BaseUrl from "../config";
 
 const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
   const [acquisitionPrice, setAcquisitionPrice] = useState(
-    localStorage.getItem("acqPrice") || ""
+    sessionStorage.getItem("acqPrice") || ""
   );
   const [arvPercentage, setArvPercentage] = useState(
-    localStorage.getItem("arvPer") || ""
+    sessionStorage.getItem("arvPer") || ""
   );
-  const [address, setAddress] = useState(localStorage.getItem("address") || "");
+  const [address, setAddress] = useState(sessionStorage.getItem("address") || "");
   const [loading, setLoading] = useState(false);
   const [criteria, setCriteria] = useState({
     propertyType: false,
@@ -52,9 +52,9 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
         data.every((item) => typeof item === "object")
       ) {
         setComparable(data);
-        localStorage.setItem("address", address);
-        localStorage.setItem("acqPrice", acquisitionPrice);
-        localStorage.setItem("arvPer", arvPercentage);
+        sessionStorage.setItem("address", address);
+        sessionStorage.setItem("acqPrice", acquisitionPrice);
+        sessionStorage.setItem("arvPer", arvPercentage);
         toast.success("Comparables Fetched Successfully");
       } else {
         toast.error(data.message || "Invalid data received.");
@@ -69,16 +69,11 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
       setLoading(false);
     }
   };
-
-  const handleCheckboxChange = (key) => {
-    setCriteria((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
   const handleChange = (e) => {
     const rawValue = e.target.value.replace(/,/g, ""); // Remove existing commas
     if (!isNaN(rawValue)) {
       setAcquisitionPrice(formatNumber(rawValue));
-      localStorage.setItem("acqPrice", e.target.value);
+      sessionStorage.setItem("acqPrice", e.target.value);
     }
   };
 
@@ -95,7 +90,7 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
               address={address}
             />
             <button
-              disabled={!address || !acquisitionPrice || !arvPercentage}
+              disabled={!address || !acquisitionPrice || !arvPercentage || loading}
               onClick={() => fetchComparables()}
               className="bg-[#4608AD] disabled:bg-[#4708ad33] disabled:cursor-not-allowed text-white w-[70px] flex justify-center items-center h-[50px] rounded-md text-sm">
               {loading ? (
@@ -121,7 +116,7 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
               value={arvPercentage}
               onChange={(e) => {
                 setArvPercentage(e.target.value);
-                localStorage.setItem("arvPer", e.target.value);
+                sessionStorage.setItem("arvPer", e.target.value);
               }}
               className="border p-2 rounded w-full"
             />
@@ -200,12 +195,20 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
               </tbody>
             </table>
           </div>
-          <button
-            disabled={comparables?.length === 0}
-            onClick={() => saveAsPDF(comparables)}
-            className="bg-[#2196f3] disabled:bg-[#2195f35e] text-white mt-4 p-2">
-            Save as PDF
-          </button>
+          <div className="flex gap-4">
+            <button
+              disabled={comparables?.length === 0}
+              onClick={() => saveAsPDF(comparables)}
+              className="bg-[#2196f3] disabled:bg-[#2195f35e] text-white mt-4 p-2">
+              Save as PDF
+            </button>
+            <button
+              disabled={comparables?.length === 0}
+              onClick={() => setComparable([])}
+              className="bg-[#f32521] disabled:bg-[#f32c213c] text-white mt-4 p-2">
+              Clear Comps
+            </button>
+          </div>
         </div>
       )}
     </div>
