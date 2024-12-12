@@ -1,7 +1,7 @@
 
 
 
-const express = require("express");
+/*const express = require("express");
 const {
   registerUser,
   loginUser,
@@ -18,4 +18,4 @@ router.get("/protected", verifyToken, (req, res) => {
   });
 });
 
-module.exports = router;
+module.exports = router;*/
