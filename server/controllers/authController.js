@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs");
+/*const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const db = require("../models/db");
 
@@ -76,4 +76,4 @@ exports.verifyToken = (req, res, next) => {
   } catch (err) {
     res.status(400).json({ message: "Invalid Token!" });
   }
-};
+};*/
