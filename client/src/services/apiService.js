@@ -1,6 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import BaseUrl from "../config";
+import "react-toastify/dist/ReactToastify.css";
 
 // Function to fetch suggestions from the AutoComplete API
 export const fetchSuggestions = async (searchQuery, setSuggestions) => {
@@ -22,21 +23,59 @@ export const fetchSuggestions = async (searchQuery, setSuggestions) => {
     console.error(error);
   }
 };
-export const Login = async (email, password) => {
-  if (!email || !password) {
-    return;
-  }
+export const LoginFn = async (email, password) => {
   try {
-    const response = await axios.post(`${BaseUrl}/api/autocomplete`, {
-      email,
-      password,
-    });
+    const response = await axios.post(
+      "https://api.hpgtools.info/api/auth/login",
+      {
+        email,
+        password,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
 
     const data = response.data;
-    console.log(data)
-    toast.success("Login Successful");
+
+    // Check if the login was successful
+    if (response.status === 200) {
+      // Save the token in localStorage
+      localStorage.setItem("token", data.token);
+
+      // Optionally save user data
+      localStorage.setItem("user", JSON.stringify(data.user));
+    } else {
+      toast.error("Login failed. Please check your credentials.");
+    }
+    console.log(data);
   } catch (error) {
-    toast.error("Failed to fetch suggestions");
-    console.error(error);
+    console.error("Login error:", error);
+    const errorMessage =
+      error.response?.data?.message || "An error occurred during login.";
+    toast.error(errorMessage);
+  }
+};
+export const RegisterFn = async (email, password) => {
+  try {
+    const response = await axios.post(
+      "https://api.hpgtools.info/api/auth/register",
+      {
+        email,
+        password,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    if (response.status === 201) {
+        
+    }
+  } catch (error) {
+    console.error("Register error:", error);
+    const errorMessage =
+      error.response?.data?.message || "An error occurred during register.";
+    toast.error(errorMessage);
   }
 };

@@ -18,7 +18,6 @@ const FindBuyers = () => {
     const url = `${BaseUrl}/api/properties`;
     try {
       setLoading(true);
-      setError(null);
       const response = await axios.post(`${url}`, {
         address,
       });

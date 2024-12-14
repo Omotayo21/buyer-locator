@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { calculateArvPercent, formatNumber, saveAsPDF } from "../utils";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { CgSpinnerAlt } from "react-icons/cg";
 import PropertyCard from "./PropertyCard";
 import { Link, useParams } from "react-router-dom";

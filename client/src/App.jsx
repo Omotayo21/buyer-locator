@@ -2,27 +2,33 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import React, { Suspense, useState } from "react";
 import Header from "./components/Header";
 import { CgSpinnerAlt } from "react-icons/cg";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 // Lazy load components
 const BuyerLocator = React.lazy(() =>
   import("./components/BuyerLocatorAndComps")
 );
 const FindBuyers = React.lazy(() => import("./pages/FindBuyers"));
 const Login = React.lazy(() => import("./pages/Login"));
-const Signup = React.lazy(() => import("./pages/Signup"));
+const Register = React.lazy(() => import("./pages/Register"));
 const ComparableFinder = React.lazy(() => import("./pages/ComparableFinder"));
 const PropertyCard = React.lazy(() => import("./pages/PropertyCard"));
+
 function App() {
   const [detail, setDetail] = useState({}); // State for selected comparable
   const [comparables, setComparable] = useState([]);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+  const isAuthenticated = !!localStorage.getItem("token")
 
   return (
     <div className=" flex relative flex-col w-full min-h-screen overflow-hidden">
       {/* Header with fixed height */}
-      <Header className="h-16 lg:h-20 flex-shrink-0" />
+      <Header className="0" isAuthenticated={isAuthenticated} setComps={setComparable}/>
 
       {/* Main content taking the remaining space */}
-      <div className="w-full flex-grow mt-16  h-full lg:max-w-screen-2xl lg:mx-auto">
+      <div className="w-full flex-grow -16 h-full lg:max-w-screen-2xl lg:mx-auto">
         <Suspense
           fallback={
             <div className="flex justify-center items-center h-screen">
@@ -38,32 +44,54 @@ function App() {
               element={<Navigate to="/locate-buyer/find-buyers" replace />}
             />
 
-            {/* Main Buyer Locator route */}
-            <Route path="/locate-buyer" element={<BuyerLocator />}>
-            {/* Default route inside locate-buyer */}
-            <Route index element={<Navigate to="find-buyers" replace />} />
-            <Route path="find-buyers" element={<FindBuyers />} />
+            {/* Protected Routes */}
             <Route
-              path="find-comps"
+              path="/locate-buyer"
               element={
-                <ComparableFinder
-                  comparables={comparables}
-                  setComparable={setComparable}
-                  setDetail={setDetail}
-                  detail={detail}
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <BuyerLocator />
+                </ProtectedRoute>
+              }>
+              <Route index element={<Navigate to="find-buyers" replace />} />
+              <Route path="find-buyers" element={<FindBuyers />} />
+              <Route
+                path="find-comps"
+                element={
+                  <ComparableFinder
+                    comparables={comparables}
+                    setComparable={setComparable}
+                    setDetail={setDetail}
+                    detail={detail}
+                  />
+                }
+              />
+              <Route
+                path="find-comps/details/:id"
+                element={<PropertyCard property={detail} />}
+              />
+            </Route>
+
+            {/* Public Routes */}
+            <Route
+              path="/login"
+              element={
+                <Login
+                  password={password}
+                  email={email}
+                  setEmail={setEmail}
+                  setPassword={setPassword}
                 />
               }
             />
+            <Route path="/register" element={<Register email={regEmail} setEmail={setRegEmail} password={regPassword} setPassword={setRegPassword}/>} />
             <Route
-              path="find-comps/details/:id"
-              element={<PropertyCard property={detail} />}
+              path="*"
+              element={
+                <div className="flex justify-center items-center h-screen">
+                  404 - Page Not Found
+                </div>
+              }
             />
-            </Route>
-
-            {/* Other routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="*" element={<div className="flex justify-center items-center h-screen ">404 - Page Not Found</div>} />
           </Routes>
         </Suspense>
       </div>
