@@ -31,7 +31,6 @@ const Login = ({ password, email, setEmail, setPassword }) => {
         navigate("/locate-buyer/find-buyers"); // Navigate to the find-buyers page
         setLoading(false);
       } else {
-        toast.error("Login failed. Please check your credentials.");
         setLoading(false);
       }
     } catch (error) {

@@ -48,7 +48,7 @@ const Header = ({ setComps }) => {
       </div>
       <div className="flex justify-center items-center h-screen">
         {/* Avatar Section */}
-        {!location.pathname==="/login" || !location.pathname==="/register" && (
+        {localStorage.getItem("token") && (
           <div className="relative">
             <img
               src="/assets/profile.webp" // Use your avatar image URL here
@@ -68,7 +68,7 @@ const Header = ({ setComps }) => {
               </div>
             )}
           </div>
-        )}
+        )} 
       </div>
     </div>
   );

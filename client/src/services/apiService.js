@@ -70,12 +70,13 @@ export const RegisterFn = async (email, password) => {
     );
 
     if (response.status === 201) {
-        
+      toast.success("Registration successful! Please log in.");
     }
+    
   } catch (error) {
     console.error("Register error:", error);
     const errorMessage =
-      error.response?.data?.message || "An error occurred during register.";
+      error.response?.data?.message || error?.message;
     toast.error(errorMessage);
   }
 };

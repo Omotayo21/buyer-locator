@@ -25,6 +25,9 @@ function App() {
   return (
     <div className=" flex relative flex-col w-full min-h-screen overflow-hidden">
       {/* Header with fixed height */}
+      {/* {
+         location.pathname === "/login" || location.pathname === "/register" &&
+      } */}
       <Header className="0" isAuthenticated={isAuthenticated} setComps={setComparable}/>
 
       {/* Main content taking the remaining space */}
