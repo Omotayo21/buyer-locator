@@ -27,9 +27,9 @@ const Header = ({ setComps }) => {
             className="w-full h-auto  max-w-[50px] object-cover rounded-lg shadow-md"
             alt="Image description"
           />
-          <h1 className="font-bold text-2xl hidden sm:block">SocialPost Pro</h1>
+          <h1 className="font-bold font-serif sm:text-2xl   sm:block">SocialPost Pro</h1>
         </div>
-        <div
+        {/* <div
           className={` gap-3 h-full items-end ${
             location.pathname === "/login" || location.pathname === "/register"
               ? "hidden"
@@ -37,14 +37,13 @@ const Header = ({ setComps }) => {
           }`}>
           <Link
             to="/locate-buyer/find-buyers"
-            className={` font-medium font-mono ${
+            className={` font-medium font-mono sm:block hidden ${
               location.pathname.startsWith("/locate-buyer")
                 ? " pb-2 text-[#4608AD] border-b-[#4608AD] border-b-4  text-[#4608AD"
                 : "pb-1  text-gray-500"
             }`}>
-            Buyer Locator and Comps
           </Link>
-        </div>
+        </div> */}
       </div>
       <div className="flex justify-center items-center h-screen">
         {/* Avatar Section */}
@@ -53,7 +52,7 @@ const Header = ({ setComps }) => {
             <img
               src="/assets/profile.webp" // Use your avatar image URL here
               alt="Avatar"
-              className="w-10 h-10 rounded-full cursor-pointer"
+              className="w-12 sm:w-10 h-10 rounded-full cursor-pointer"
               onClick={handleAvatarClick}
             />
 

@@ -20,7 +20,7 @@ function App() {
   const [password, setPassword] = useState("");
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
-  const isAuthenticated = !!localStorage.getItem("token")
+  const isAuthenticated = !!localStorage.getItem("token");
 
   return (
     <div className=" flex relative flex-col w-full min-h-screen overflow-hidden">
@@ -28,7 +28,11 @@ function App() {
       {/* {
          location.pathname === "/login" || location.pathname === "/register" &&
       } */}
-      <Header className="0" isAuthenticated={isAuthenticated} setComps={setComparable}/>
+      <Header
+        className="0"
+        isAuthenticated={isAuthenticated}
+        setComps={setComparable}
+      />
 
       {/* Main content taking the remaining space */}
       <div className="w-full flex-grow -16 h-full lg:max-w-screen-2xl lg:mx-auto">
@@ -41,11 +45,8 @@ function App() {
             </div>
           }>
           <Routes>
-            {/* Redirect from root to /locate-buyer/find-buyers */}
-            <Route
-              path="/"
-              element={<Navigate to="/locate-buyer/find-buyers" replace />}
-            />
+            {/* Redirect from root to /login */}
+            <Route index path="/" element={<Navigate to="/login" replace />} />
 
             {/* Protected Routes */}
             <Route
@@ -55,7 +56,7 @@ function App() {
                   <BuyerLocator />
                 </ProtectedRoute>
               }>
-              <Route index element={<Navigate to="find-buyers" replace />} />
+              <Route  element={<Navigate to="find-buyers" replace />} />
               <Route path="find-buyers" element={<FindBuyers />} />
               <Route
                 path="find-comps"
@@ -86,7 +87,17 @@ function App() {
                 />
               }
             />
-            <Route path="/register" element={<Register email={regEmail} setEmail={setRegEmail} password={regPassword} setPassword={setRegPassword}/>} />
+            <Route
+              path="/register"
+              element={
+                <Register
+                  email={regEmail}
+                  setEmail={setRegEmail}
+                  password={regPassword}
+                  setPassword={setRegPassword}
+                />
+              }
+            />
             <Route
               path="*"
               element={
