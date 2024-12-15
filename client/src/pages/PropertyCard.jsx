@@ -139,6 +139,7 @@ const PropertyCard = () => {
           {/* Image */} 
           <div className=" w-full lg:w-1/3">
             <img
+            loading="lazy"
               src={property?.imageUrl || "https://via.placeholder.com/150"}
               alt="Property"
               className="rounded-lg w-full object-cover"

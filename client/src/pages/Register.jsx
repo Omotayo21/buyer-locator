@@ -3,11 +3,20 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RegisterFn } from "../services/apiService";
-import { CgSpinnerAlt } from "react-icons/cg";
+import { CgEye, CgSpinnerAlt } from "react-icons/cg";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
-const Register = ({ setEmail, email, setPassword, password ,setLoginEmail,setLoginPassword}) => {
+const Register = ({
+  setEmail,
+  email,
+  setPassword,
+  password,
+  setLoginEmail,
+  setLoginPassword,
+}) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -58,14 +67,21 @@ const Register = ({ setEmail, email, setPassword, password ,setLoginEmail,setLog
               htmlFor="password">
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
+            <div className="relative">
+              <input
+                type={open ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <div
+                onClick={() => setOpen((prev) => !prev)}
+                className="absolute top-5 right-4 cursor-pointer">
+                {open ? <IoMdEye size={20}/> : <IoMdEyeOff size={20}/>}
+              </div>
+            </div>
           </div>
           <button
             type="submit"

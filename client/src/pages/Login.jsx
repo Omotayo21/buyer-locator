@@ -6,17 +6,21 @@ import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { CgSpinnerAlt } from "react-icons/cg";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
 const Login = ({ password, email, setEmail, setPassword }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const handleLogin = async (e) => {
     e.preventDefault();
 
     setLoading(true);
     console.log(loading);
     if (!email || !password || password.length < 8) {
-      toast.error("Please fill in all fields and password should contain at least 8 characters");
+      toast.error(
+        "Please fill in all fields and password should contain at least 8 characters"
+      );
       setLoading(false);
       return;
     }
@@ -51,7 +55,7 @@ const Login = ({ password, email, setEmail, setPassword }) => {
               Email
             </label>
             <input
-              type="text"
+              type="email"
               onChange={(e) => setEmail(e.target.value)}
               id="email"
               value={email}
@@ -65,19 +69,30 @@ const Login = ({ password, email, setEmail, setPassword }) => {
               htmlFor="password">
               Password
             </label>
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              id="password"
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
+            <div className="relative">
+              <input
+                type={open ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                id="password"
+                placeholder="Enter your password"
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <div
+                onClick={() => setOpen((prev) => !prev)}
+                className="absolute top-5 right-4 cursor-pointer">
+                {open ? <IoMdEye size={20} /> : <IoMdEyeOff size={20} />}
+              </div>
+            </div>
           </div>
           <button
             type="submit"
             className="w-full flex justify-center px-4 py-2 mt-4 font-bold text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:outline-none">
-            {!loading ? "Login" : <CgSpinnerAlt size={20} className="animate-spin" />}
+            {!loading ? (
+              "Login"
+            ) : (
+              <CgSpinnerAlt size={20} className="animate-spin" />
+            )}
           </button>
         </form>
         <p className="mt-4 text-sm text-center text-gray-600">

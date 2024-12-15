@@ -51,7 +51,7 @@ export const LoginFn = async (email, password) => {
     console.log(data);
   } catch (error) {
     console.error("Login error:", error);
-    const errorMessage = error?.message || "An error occurred during login.";
+    const errorMessage = error?.response?.data?.message || error?.message;
     toast.error(errorMessage);
   }
 };
