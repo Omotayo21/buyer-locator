@@ -5,20 +5,28 @@ import "react-toastify/dist/ReactToastify.css";
 import { RegisterFn } from "../services/apiService";
 import { CgSpinnerAlt } from "react-icons/cg";
 
-const Register = ({ setEmail, email, setPassword, password }) => {
+const Register = ({ setEmail, email, setPassword, password ,setLoginEmail,setLoginPassword}) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
+    if (!email || !password || password.length < 8) {
+      toast.error(
+        "Please fill in all fields and password should contain at least 8 characters"
+      );
+      setLoading(false);
+      return;
+    }
     try {
       await RegisterFn(email, password);
-      setLoading(false);
-      navigate("/login"); // Redirect to login page
+      navigate("/login"); // Only navigate on success
+      setLoginEmail(email);
+      setLoginPassword(password);
     } catch (error) {
-      setLoading(false);
-      toast.error(error)
-      console.error("Registration failed:", error);
+      console.log(error);
+    } finally {
+      setLoading(false); // Ensures loading state is cleared
     }
   };
 

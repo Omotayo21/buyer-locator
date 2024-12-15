@@ -77,7 +77,7 @@ const Login = ({ password, email, setEmail, setPassword }) => {
           <button
             type="submit"
             className="w-full flex justify-center px-4 py-2 mt-4 font-bold text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:outline-none">
-            {!loading ? "Login" : <CgSpinnerAlt className="animate-spin" />}
+            {!loading ? "Login" : <CgSpinnerAlt size={20} className="animate-spin" />}
           </button>
         </form>
         <p className="mt-4 text-sm text-center text-gray-600">

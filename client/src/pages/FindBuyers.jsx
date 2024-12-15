@@ -80,7 +80,7 @@ const FindBuyers = () => {
         <div className="flex w-ful h-fit gap-4 ">
           <Input setAddress={setAddress} address={address} />
           <button
-            disabled={address.length <= 0}
+            disabled={address.length <= 0|| loading}
             onClick={fetchBuyers}
             className="bg-[#4608AD] disabled:bg-[#4708ad33] disabled:cursor-not-allowed text-white w-[70px] flex justify-center items-center  h-[50px] rounded-md text-sm">
             {loading ? (

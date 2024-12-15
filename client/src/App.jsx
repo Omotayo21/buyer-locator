@@ -23,11 +23,7 @@ function App() {
   const isAuthenticated = !!localStorage.getItem("token");
 
   return (
-    <div className=" flex relative flex-col w-full min-h-screen overflow-hidden">
-      {/* Header with fixed height */}
-      {/* {
-         location.pathname === "/login" || location.pathname === "/register" &&
-      } */}
+    <div className=" flex relative flex-col  min-h-screen overflow-hidden">
       <Header
         className="0"
         isAuthenticated={isAuthenticated}
@@ -35,7 +31,7 @@ function App() {
       />
 
       {/* Main content taking the remaining space */}
-      <div className="w-full flex-grow -16 h-full lg:max-w-screen-2xl lg:mx-auto">
+      <div className="w-full flex-grow  h-full lg:max-w-screen-2xl lg:mx-auto">
         <Suspense
           fallback={
             <div className="flex justify-center items-center h-screen">
@@ -95,6 +91,8 @@ function App() {
                   setEmail={setRegEmail}
                   password={regPassword}
                   setPassword={setRegPassword}
+                  setLoginEmail={setEmail}
+                  setLoginPassword={setPassword}
                 />
               }
             />

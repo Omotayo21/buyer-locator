@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ToastContainer />
+    <ToastContainer autoClose={1500}/>
     <BrowserRouter>
       <App />
     </BrowserRouter>

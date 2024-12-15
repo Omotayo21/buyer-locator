@@ -26,7 +26,7 @@ export const fetchSuggestions = async (searchQuery, setSuggestions) => {
 export const LoginFn = async (email, password) => {
   try {
     const response = await axios.post(
-      "https://api.hpgtools.info/api/auth/login",
+      `${BaseUrl}/api/auth/login`,
       {
         email,
         password,
@@ -51,15 +51,14 @@ export const LoginFn = async (email, password) => {
     console.log(data);
   } catch (error) {
     console.error("Login error:", error);
-    const errorMessage =
-      error.response?.data?.message || "An error occurred during login.";
+    const errorMessage = error?.message || "An error occurred during login.";
     toast.error(errorMessage);
   }
 };
 export const RegisterFn = async (email, password) => {
   try {
     const response = await axios.post(
-      "https://api.hpgtools.info/api/auth/register",
+      `${BaseUrl}/api/auth/register`,
       {
         email,
         password,
@@ -70,13 +69,13 @@ export const RegisterFn = async (email, password) => {
     );
 
     if (response.status === 201) {
-      toast.success("Registration successful! Please log in.");
+      toast.success("Registration Successful!");
+      return response.data; // Success, return data
     }
-    
   } catch (error) {
-    console.error("Register error:", error);
-    const errorMessage =
-      error.response?.data?.message || error?.message;
+    const errorMessage = error?.response?.data?.message || error.message;
     toast.error(errorMessage);
+    throw new Error(errorMessage); // Re-throw the error to handle it in the caller
   }
 };
+

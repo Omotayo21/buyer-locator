@@ -135,9 +135,9 @@ const PropertyCard = () => {
 
           <h3>Go back</h3>
         </div>
-        <div className="flex items-start gap-4">
-          {/* Image */}
-          <div className="w-1/3">
+        <div className="lg:flex items-start gap-4">
+          {/* Image */} 
+          <div className=" w-full lg:w-1/3">
             <img
               src={property?.imageUrl || "https://via.placeholder.com/150"}
               alt="Property"
