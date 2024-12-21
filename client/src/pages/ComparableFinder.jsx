@@ -10,6 +10,7 @@ import axios from "axios";
 import BaseUrl from "../config";
 
 const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
+  const { id } = useParams();
   const [acquisitionPrice, setAcquisitionPrice] = useState(
     sessionStorage.getItem("acqPrice") || ""
   );
@@ -28,7 +29,7 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
   });
 
   const criteriaLabels = {
-    propertyType: "Property of thesame Type",
+    propertyType: "Property of the same Type",
     squareFeet: "Within 250 sqft of the subject property",
     yearBuilt: "1-year comp sale",
     lotSquareFeet: "Lot Square Feet",
@@ -36,22 +37,17 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
     withinHalfMile: "Property within Half Mile",
   };
 
-  const { id } = useParams();
-
+  // Function to fetch comparables from API
   const fetchComparables = async () => {
-    // setLoading(true)
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await axios.post(`${BaseUrl}/api/comparables`, {
         address,
         criteria,
       });
 
       const data = response.data;
-      if (
-        Array.isArray(data) &&
-        data.every((item) => typeof item === "object")
-      ) {
+      if (Array.isArray(data) && data.every((item) => typeof item === "object")) {
         setComparable(data);
         sessionStorage.setItem("address", address);
         sessionStorage.setItem("acqPrice", acquisitionPrice);
@@ -63,13 +59,13 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
       }
     } catch (err) {
       toast.error(err?.response?.data?.error || err?.message);
-      console.log("first");
-      setLoading(false);
       console.log(err);
     } finally {
       setLoading(false);
     }
   };
+
+  // Handle changes for the acquisition price input
   const handleChange = (e) => {
     const rawValue = e.target.value.replace(/,/g, ""); // Remove existing commas
     if (!isNaN(rawValue)) {
@@ -84,23 +80,19 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
         <PropertyCard />
       ) : (
         <div className="w-full h-full">
-          <div className="flex w-ful h-fit gap-4">
-            <Input
-              setComparable={setComparable}
-              setAddress={setAddress}
-              address={address}
-            />
+          {/* Input fields for address, acquisition price, ARV% */}
+          <div className="flex w-full h-fit gap-4">
+            <Input setComparable={setComparable} setAddress={setAddress} address={address} />
             <button
               disabled={!address || !acquisitionPrice || !arvPercentage || loading}
-              onClick={() => fetchComparables()}
-              className="bg-[#4608AD] disabled:bg-[#4708ad33] disabled:cursor-not-allowed text-white w-[70px] flex justify-center items-center h-[50px] rounded-md text-sm">
-              {loading ? (
-                <CgSpinnerAlt className="animate-spin" />
-              ) : (
-                "Get Comps"
-              )}
+              onClick={fetchComparables}
+              className="bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white w-[70px] flex justify-center items-center h-[50px] rounded-md text-sm"
+            >
+              {loading ? <CgSpinnerAlt className="animate-spin" /> : "Get Comps"}
             </button>
           </div>
+
+          {/* Acquisition price input */}
           <div className="flex gap-4 mt-4">
             <input
               type="text"
@@ -110,6 +102,8 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
               onChange={handleChange}
             />
           </div>
+
+          {/* ARV% input */}
           <div className="flex gap-4 mt-4">
             <input
               type="number"
@@ -122,6 +116,8 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
               className="border p-2 rounded w-full"
             />
           </div>
+
+          {/* Criteria checkboxes */}
           <div className="flex gap-4 mt-4 flex-wrap">
             {Object.keys(criteria).map((key) => (
               <label key={key} className="flex items-center space-x-2">
@@ -140,6 +136,8 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
               </label>
             ))}
           </div>
+
+          {/* Display comparables in a table */}
           <div className="overflow-y-auto h-96 mt-4">
             <table className="table-auto w-full text-left text-sm text-gray-500">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -154,40 +152,28 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
               <tbody>
                 {comparables?.length > 0 &&
                   comparables.map((comp) => {
-                    const arvPercent = calculateArvPercent(
-                      comp,
-                      acquisitionPrice
-                    );
-
+                    const arvPercent = calculateArvPercent(comp, acquisitionPrice);
                     return (
                       <tr key={comp.id} className="bg-white border-b">
                         <td className="py-4 px-6">{comp.id}</td>
                         <td className="py-4 px-6">
-                          {`${comp?.owner1FirstName || ""} ${
-                            comp?.owner1LastName || ""
-                          }`}
+                          {`${comp?.owner1FirstName || ""} ${comp?.owner1LastName || ""}`}
                         </td>
-                        <td
-                          onClick={() =>
-                            (document.documentElement.scrollTop = 0)
-                          }
-                          className="py-4 px-6">
+                        <td className="py-4 px-6">
                           <Link
                             state={{ address }}
                             to={`/locate-buyer/find-comps/details/${comp.id}`}
-                            className="text-blue-500 underline">
+                            className="text-blue-500 underline"
+                          >
                             {comp.address?.address}
                           </Link>
                         </td>
-                        <td className="py-4 px-6">
-                          ${Number(comp?.lastSaleAmount).toLocaleString()}
-                        </td>
+                        <td className="py-4 px-6">${Number(comp?.lastSaleAmount).toLocaleString()}</td>
                         <td
                           className={`py-4 px-6 ${
-                            arvPercent >= Number(arvPercentage)
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }`}>
+                            arvPercent >= Number(arvPercentage) ? "text-green-600" : "text-red-600"
+                          }`}
+                        >
                           {arvPercent?.toLocaleString()}%
                         </td>
                       </tr>
@@ -196,17 +182,21 @@ const ComparableFinder = ({ comparables, setComparable, setDetail }) => {
               </tbody>
             </table>
           </div>
+
+          {/* Buttons for saving as PDF and clearing comparables */}
           <div className="flex gap-4">
             <button
               disabled={comparables?.length === 0}
               onClick={() => saveAsPDF(comparables)}
-              className="bg-[#2196f3] disabled:bg-[#2195f35e] text-white mt-4 p-2">
+              className="bg-blue-600 disabled:bg-[#2195f35e] text-white mt-4 p-2"
+            >
               Save as PDF
             </button>
             <button
               disabled={comparables?.length === 0}
               onClick={() => setComparable([])}
-              className="bg-[#f32521] disabled:bg-[#f32c213c] text-white mt-4 p-2">
+              className="bg-[#f32521] disabled:bg-[#f32c213c] text-white mt-4 p-2"
+            >
               Clear Comps
             </button>
           </div>

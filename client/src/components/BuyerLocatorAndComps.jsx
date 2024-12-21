@@ -6,35 +6,36 @@ import "react-toastify/dist/ReactToastify.css";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 const BuyerLocator = () => {
-    const location=useLocation()
+  const location = useLocation();
+
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center min-h-screen bg-white">
       {/* Navigation Links */}
-      <nav className="flex space-x-4">
+      <nav className="flex space-x-4 bg-gray-100 p-4 rounded-lg shadow-md">
         <Link
-        className={` font-medium font-mono ${
-            location.pathname===("/locate-buyer/find-buyers") 
-              ? " pb-2 text-[#4608AD] border-b-[#4608AD] border-b-4  text-[#4608AD"
-              : "pb-3  text-gray-500"
-          }`}
           to="find-buyers" // Correct relative path
-        //   className="text-blue-500 hover:text-blue-700 transition">
+          className={`font-medium font-mono text-lg ${
+            location.pathname === "/locate-buyer/find-buyers"
+              ? "pb-2 text-blue-600 border-b-4 border-blue-600"
+              : "pb-3 text-gray-600 hover:text-blue-600"
+          } transition-all duration-300`}
         >
           Find Buyers
         </Link>
         <Link
           to="find-comps" // Correct relative path
-          className={` font-medium font-mono ${
-            location.pathname.includes("/locate-buyer/find-comps") 
-              ? " pb-2 text-[#4608AD] border-b-[#4608AD] border-b-4  text-[#4608AD"
-              : "pb-3  text-gray-500"
-          }`}>
+          className={`font-medium font-mono text-lg ${
+            location.pathname.includes("/locate-buyer/find-comps")
+              ? "pb-2 text-blue-600 border-b-4 border-blue-600"
+              : "pb-3 text-gray-600 hover:text-blue-600"
+          } transition-all duration-300`}
+        >
           Find Comparables
         </Link>
       </nav>
 
       {/* Outlet for rendering child routes */}
-      <div className="w-full">
+      <div className="w-full mt-8">
         <Outlet />
       </div>
     </div>

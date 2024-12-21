@@ -17,6 +17,10 @@ export const calculateArvPercent = (comp, acquisitionPrice) => {
 export const formatNumber = (num) => {
   return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
+// Christmas
+const today = new Date();
+export const isChristmas =
+  today.getMonth() === 11 && today.getDate() === 25; 
 
 // Save Table as PDF
 export const saveAsPDF = (comparables) => {

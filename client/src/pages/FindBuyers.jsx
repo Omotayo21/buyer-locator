@@ -75,68 +75,56 @@ const FindBuyers = () => {
   };
 
   return (
-    <div className="lg:border mt-4  lg:border-gray-300 mx-auto  lg:p-0 max-w-xl h-4/5">
-      <div className="w-full h-full ">
-        <div className="flex w-ful h-fit gap-4 ">
-          <Input setAddress={setAddress} address={address} />
-          <button
-            disabled={address.length <= 0|| loading}
-            onClick={fetchBuyers}
-            className="bg-[#4608AD] disabled:bg-[#4708ad33] disabled:cursor-not-allowed text-white w-[70px] flex justify-center items-center  h-[50px] rounded-md text-sm">
-            {loading ? (
-              <p className="animate-spin">
-                <CgSpinnerAlt />
-              </p>
-            ) : (
-              "Get Buyers"
-            )}
-          </button>
-        </div>
-        <div className="overflow-y-auto h-96">
-          <table className="table-auto w-full text-left text-sm text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="py-3 px-6">
-                  ID
-                </th>
-                <th scope="col" className="py-3 px-6">
-                  Name
-                </th>
-                <th scope="col" className="py-3 px-6">
-                  12M Purchase
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {buyers.map((item) => (
-                <tr
-                  key={item.id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  <td className="py-4 px-6">{item.propertyId}</td>
-                  <td className="py-4 px-6">
-                    {`${item?.owner1FirstName || ""}  ${
-                      item?.owner1LastName || ""
-                    }`}
-                  </td>
-                  <td className="py-4 px-6">
-                    {item.portfolioPurchasedLast12Months}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <abbr title="Make sure the table contains at least one buyer before Saving As PDF ">
-        <button
-          disabled={buyers.length <= 0}
-          onClick={saveAsPDF}
-          className="bg-[#2196f3] disabled:bg-[#2195f35e] text-white mt-4 p-2">
-          Save as PDF
-        </button>
-      </abbr>
-
+    <div className="lg:border mt-4 lg:border-gray-300 mx-auto lg:p-0 max-w-xl h-4/5">
+  <div className="w-full h-full">
+    <div className="flex w-full h-fit gap-4">
+      <Input setAddress={setAddress} address={address} />
+      <button
+        disabled={address.length <= 0 || loading}
+        onClick={fetchBuyers}
+        className="bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white w-[70px] flex justify-center items-center h-[50px] rounded-md text-sm">
+        {loading ? (
+          <p className="animate-spin">
+            <CgSpinnerAlt />
+          </p>
+        ) : (
+          "Get Buyers"
+        )}
+      </button>
     </div>
+    <div className="overflow-y-auto h-96">
+      <table className="table-auto w-full text-left text-sm text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+          <tr>
+            <th scope="col" className="py-3 px-6">ID</th>
+            <th scope="col" className="py-3 px-6">Name</th>
+            <th scope="col" className="py-3 px-6">12M Purchase</th>
+          </tr>
+        </thead>
+        <tbody>
+          {buyers.map((item) => (
+            <tr key={item.id} className="bg-white border-b">
+              <td className="py-4 px-6">{item.propertyId}</td>
+              <td className="py-4 px-6">
+                {`${item?.owner1FirstName || ""} ${item?.owner1LastName || ""}`}
+              </td>
+              <td className="py-4 px-6">{item.portfolioPurchasedLast12Months}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <abbr title="Make sure the table contains at least one buyer before Saving As PDF">
+    <button
+      disabled={buyers.length <= 0}
+      onClick={saveAsPDF}
+      className="bg-blue-500 disabled:bg-gray-300 text-white mt-4 p-2">
+      Save as PDF
+    </button>
+  </abbr>
+</div>
+
   );
 };
 
